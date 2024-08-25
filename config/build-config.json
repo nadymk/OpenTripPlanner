@@ -1,0 +1,13 @@
+// build-config.json
+{
+ 
+  "transitServiceStart" : "2024-06-08",
+   
+  "transitServiceEnd" : "2024-12-14",
+  "osmWayPropertySet": "uk"
+}
+
+#  "transitServiceStart" : "2020-02-04",
+   
+#"transitServiceEnd" : "2020-08-07",
+# "osmWayPropertySet": "uk"
