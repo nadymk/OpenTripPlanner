@@ -360,7 +360,7 @@ public class ItineraryListFilterChainTest implements PlanTestConstants {
       car = newItinerary(A).drive(T11_30, T11_50, B).build();
       Map<FeedScopedId, Double> emissions = new HashMap<>();
       emissions.put(new FeedScopedId("F", "1"), 1.0);
-      eService = new DefaultEmissionsService(new EmissionsDataModel(emissions, 1.0));
+      eService = new DefaultEmissionsService(new EmissionsDataModel(emissions, 1.0, 50));
     }
 
     @Test

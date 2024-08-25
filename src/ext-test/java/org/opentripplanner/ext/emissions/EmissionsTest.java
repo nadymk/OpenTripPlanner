@@ -56,7 +56,7 @@ class EmissionsTest {
     Map<FeedScopedId, Double> emissions = new HashMap<>();
     emissions.put(new FeedScopedId("F", "1"), (0.12 / 12));
     emissions.put(new FeedScopedId("F", "2"), 0.0);
-    EmissionsDataModel emissionsDataModel = new EmissionsDataModel(emissions, 0.131);
+    EmissionsDataModel emissionsDataModel = new EmissionsDataModel(emissions, 0.131, 50);
     eService = new DefaultEmissionsService(emissionsDataModel);
     decorateWithEmission = new DecorateWithEmission(eService);
   }
