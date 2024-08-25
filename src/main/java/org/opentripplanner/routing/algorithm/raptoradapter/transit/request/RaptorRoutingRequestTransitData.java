@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opentripplanner.ext.emissions.EmissionsService;
 import org.opentripplanner.framework.application.OTPFeature;
 import org.opentripplanner.framework.time.ServiceDateUtils;
 import org.opentripplanner.model.transfer.TransferService;
@@ -69,14 +70,19 @@ public class RaptorRoutingRequestTransitData implements RaptorTransitDataProvide
 
   private final int validTransitDataEndTime;
 
+  private final EmissionsService emissionsService;
+
+
   public RaptorRoutingRequestTransitData(
     TransitLayer transitLayer,
     ZonedDateTime transitSearchTimeZero,
     int additionalPastSearchDays,
     int additionalFutureSearchDays,
     TransitDataProviderFilter filter,
+    EmissionsService emissionsService,
     RouteRequest request
   ) {
+    this.emissionsService = emissionsService;
     this.transferService = transitLayer.getTransferService();
     this.transitLayer = transitLayer;
     this.transitSearchTimeZero = transitSearchTimeZero;
@@ -101,10 +107,12 @@ public class RaptorRoutingRequestTransitData implements RaptorTransitDataProvide
 
     var mcCostParams = GeneralizedCostParametersMapper.map(request, patternIndex);
 
+    // Cost calculator created here
     this.generalizedCostCalculator =
       CostCalculatorFactory.createCostCalculator(
         mcCostParams,
-        transitLayer.getStopBoardAlightCosts()
+        transitLayer.getStopBoardAlightCosts(),
+        emissionsService
       );
 
     this.slackProvider =

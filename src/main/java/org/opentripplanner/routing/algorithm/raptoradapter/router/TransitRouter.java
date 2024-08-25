@@ -314,6 +314,7 @@ public class TransitRouter {
       additionalSearchDays.additionalSearchDaysInPast(),
       additionalSearchDays.additionalSearchDaysInFuture(),
       new RouteRequestTransitDataProviderFilter(request),
+      serverContext.emissionsService(),
       request
     );
   }

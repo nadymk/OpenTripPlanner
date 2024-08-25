@@ -26,6 +26,11 @@ public class DefaultEmissionsService implements EmissionsService {
   }
 
   @Override
+  public Optional<Integer> getCrowdedness(FeedScopedId feedScopedRouteId) {
+    return Optional.of(100);
+  }
+
+  @Override
   public Optional<Emissions> getEmissionsPerMeterForCar() {
     Optional<Double> co2Emissions = this.emissionsDataModel.getCarAvgCo2PerMeter();
     return co2Emissions.isPresent()
