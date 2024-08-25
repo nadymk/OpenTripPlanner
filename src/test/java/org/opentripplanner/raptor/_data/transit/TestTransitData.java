@@ -104,7 +104,8 @@ public class TestTransitData
   public RaptorCostCalculator<TestTripSchedule> multiCriteriaCostCalculator() {
     return CostCalculatorFactory.createCostCalculator(
       costParamsBuilder.build(),
-      stopBoardAlightCost()
+      stopBoardAlightCost(),
+      null
     );
   }
 

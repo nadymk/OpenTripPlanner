@@ -170,7 +170,7 @@ public class PatternCostCalculatorTest {
         createRouteRequest(),
         List.of(schedule.pattern())
       );
-      return CostCalculatorFactory.createCostCalculator(costParams, null);
+      return CostCalculatorFactory.createCostCalculator(costParams, null, null);
     }
 
     /**
