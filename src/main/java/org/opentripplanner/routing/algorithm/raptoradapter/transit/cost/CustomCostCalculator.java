@@ -38,11 +38,10 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
       transferConstraints
     );
 
-    var emissions = (int) Math.round(emissionsService.getEmissionsPerMeterForCar().get().getCo2().asDouble());
+    var emissions = (int) emissionsService.getAvgOccupancy().get();
 
     System.out.println("Default Cost: " + defaultCost + " Emissions: " + emissions);
-    System.out.println(emissionsService.getEmissionsPerMeterForCar().get());
-    System.out.println(emissionsService.getEmissionsPerMeterForCar());
+    System.out.println(emissionsService.getAvgOccupancy().toString());
 
     return defaultCost + emissions;
   }

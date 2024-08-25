@@ -6,6 +6,7 @@
   "transitServiceEnd" : "2024-12-14",
   "osmWayPropertySet": "uk",
   "emissions" : {
+    "avgOccupancy": 40,
     "carAvgCo2PerKm" : 170,
     "carAvgOccupancy" : 1.3
   }

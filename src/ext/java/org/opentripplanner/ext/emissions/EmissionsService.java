@@ -17,7 +17,7 @@ public interface EmissionsService {
    */
   Optional<Emissions> getEmissionsPerMeterForRoute(FeedScopedId feedScopedRouteId);
 
-  Optional<Integer> getCrowdedness(FeedScopedId feedScopedRouteId);
+  Optional<Integer> getAvgOccupancy();
 
   /**
    * Get all emissions per meter for a car.

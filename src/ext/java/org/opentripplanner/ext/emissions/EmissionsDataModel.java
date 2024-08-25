@@ -13,13 +13,23 @@ public class EmissionsDataModel implements Serializable {
 
   private Map<FeedScopedId, Double> co2Emissions;
   private Double carAvgCo2PerMeter;
+  private Integer avgOccupancy;
 
   @Inject
   public EmissionsDataModel() {}
 
-  public EmissionsDataModel(Map<FeedScopedId, Double> co2Emissions, double carAvgCo2PerMeter) {
+  public EmissionsDataModel(Map<FeedScopedId, Double> co2Emissions, double carAvgCo2PerMeter, int avgOccupancy) {
     this.co2Emissions = co2Emissions;
     this.carAvgCo2PerMeter = carAvgCo2PerMeter;
+    this.avgOccupancy = avgOccupancy;
+  }
+
+  public void setAvgOccupancy(int avgOccupancy) {
+    this.avgOccupancy = avgOccupancy;
+  }
+
+  public Optional<Integer> getAvgOccupancy() {
+    return Optional.ofNullable(this.avgOccupancy);
   }
 
   public void setCo2Emissions(Map<FeedScopedId, Double> co2Emissions) {
