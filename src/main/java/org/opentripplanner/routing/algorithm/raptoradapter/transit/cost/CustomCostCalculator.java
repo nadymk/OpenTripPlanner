@@ -41,6 +41,8 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
     var emissions = (int) Math.round(emissionsService.getEmissionsPerMeterForCar().get().getCo2().asDouble());
 
     System.out.println("Default Cost: " + defaultCost + " Emissions: " + emissions);
+    System.out.println(emissionsService.getEmissionsPerMeterForCar().get());
+    System.out.println(emissionsService.getEmissionsPerMeterForCar());
 
     return defaultCost + emissions;
   }
