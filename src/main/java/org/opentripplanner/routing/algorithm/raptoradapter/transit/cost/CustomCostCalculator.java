@@ -33,6 +33,9 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
     trip.pattern().stopIndex(boardStop);
 
     System.out.println(((TripScheduleWithOffset)trip).getOriginalTripPattern().getName());
+    System.out.println(((TripScheduleWithOffset)trip).getOriginalTripPattern().getStop(boardStop));
+    System.out.println(((TripScheduleWithOffset)trip).getOriginalTripPattern().getStop(boardStop).getId());
+    System.out.println(((TripScheduleWithOffset)trip).getOriginalTripPattern().getStops());
 
     int defaultCost = delegate.boardingCost(
       firstBoarding,
