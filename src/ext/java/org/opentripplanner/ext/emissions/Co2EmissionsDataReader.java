@@ -60,12 +60,10 @@ public class Co2EmissionsDataReader {
    */
   public Map<String, Integer> readGtfsZip(File file) {
     try (ZipFile zipFile = new ZipFile(file, ZipFile.OPEN_READ)) {
-      ZipEntry feedInfo = zipFile.getEntry("feed_info.txt");
       ZipEntry emissions = zipFile.getEntry("emissions.txt");
-      if (emissions != null && feedInfo != null) {
-        String feedId = readFeedId(zipFile.getInputStream(feedInfo));
+      if (emissions != null) {
         InputStream stream = zipFile.getInputStream(emissions);
-        Map<String, Integer> emissionsData = readEmissions(stream, feedId);
+        Map<String, Integer> emissionsData = readEmissions(stream, "");
         zipFile.close();
         return emissionsData;
       }

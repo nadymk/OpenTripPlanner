@@ -40,29 +40,35 @@ public class EmissionsModule implements GraphBuilderModule {
   }
 
   public void buildGraph() {
-    if (config.emissions != null) {
-      LOG.info("Start emissions building");
-      Co2EmissionsDataReader co2EmissionsDataReader = new Co2EmissionsDataReader(issueStore);
-      double carAvgCo2PerKm = config.emissions.getCarAvgCo2PerKm();
-      double carAvgOccupancy = config.emissions.getCarAvgOccupancy();
-      int avgOccupancy = config.emissions.getAvgOccupancy();
-      double carAvgEmissionsPerMeter = carAvgCo2PerKm / 1000 / carAvgOccupancy;
-      Map<String, Integer> emissionsData = new HashMap<>();
-      for (ConfiguredDataSource<GtfsFeedParameters> gtfsData : dataSources) {
-        Map<String, Integer> co2Emissions;
-        if (gtfsData.dataSource().name().contains(".zip")) {
-          co2Emissions = co2EmissionsDataReader.readGtfsZip(new File(gtfsData.dataSource().uri()));
-        } else {
-          co2Emissions = co2EmissionsDataReader.readGtfs(new File(gtfsData.dataSource().uri()));
-        }
-        emissionsData.putAll(co2Emissions);
-      }
-      this.emissionsDataModel.setAvgOccupancy(avgOccupancy);
-      this.emissionsDataModel.setCo2Emissions(emissionsData);
-      this.emissionsDataModel.setCarAvgCo2PerMeter(carAvgEmissionsPerMeter);
-      LOG.info(
-        "Emissions building finished. Number of CO2 emission records saved: " + emissionsData.size()
-      );
+    if (config.emissions == null) {
+      LOG.info("No emissions config loaded");
+      return;
     }
+
+    LOG.info("Start emissions building");
+    Co2EmissionsDataReader co2EmissionsDataReader = new Co2EmissionsDataReader(issueStore);
+    double carAvgCo2PerKm = config.emissions.getCarAvgCo2PerKm();
+    double carAvgOccupancy = config.emissions.getCarAvgOccupancy();
+    int avgOccupancy = config.emissions.getAvgOccupancy();
+    double carAvgEmissionsPerMeter = carAvgCo2PerKm / 1000 / carAvgOccupancy;
+    Map<String, Integer> emissionsData = new HashMap<>();
+    LOG.info("Data sources" + dataSources.toString());
+
+    for (ConfiguredDataSource<GtfsFeedParameters> gtfsData : dataSources) {
+      LOG.info("Source: " + gtfsData.dataSource().uri().toString());
+      Map<String, Integer> co2Emissions;
+      if (gtfsData.dataSource().name().contains(".zip")) {
+        co2Emissions = co2EmissionsDataReader.readGtfsZip(new File(gtfsData.dataSource().uri()));
+      } else {
+        co2Emissions = co2EmissionsDataReader.readGtfs(new File(gtfsData.dataSource().uri()));
+      }
+      emissionsData.putAll(co2Emissions);
+    }
+    this.emissionsDataModel.setAvgOccupancy(avgOccupancy);
+    this.emissionsDataModel.setCo2Emissions(emissionsData);
+    this.emissionsDataModel.setCarAvgCo2PerMeter(carAvgEmissionsPerMeter);
+    LOG.info(
+      "Emissions building finished. Number of CO2 emission records saved: " + emissionsData.size()
+    );
   }
 }
