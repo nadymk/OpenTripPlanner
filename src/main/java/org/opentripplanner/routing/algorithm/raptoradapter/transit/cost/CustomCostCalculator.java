@@ -5,6 +5,7 @@ import org.opentripplanner.ext.emissions.EmissionsService;
 import org.opentripplanner.raptor.api.model.RaptorAccessEgress;
 import org.opentripplanner.raptor.api.model.RaptorTransferConstraint;
 import org.opentripplanner.raptor.spi.RaptorCostCalculator;
+import org.opentripplanner.routing.algorithm.raptoradapter.transit.request.TripScheduleWithOffset;
 
 public class CustomCostCalculator<T extends DefaultTripSchedule>
   implements RaptorCostCalculator<T> {
@@ -29,6 +30,10 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
     T trip,
     RaptorTransferConstraint transferConstraints
   ) {
+    trip.pattern().stopIndex(boardStop);
+
+    System.out.println(((TripScheduleWithOffset)trip).getOriginalTripPattern().getName());
+
     int defaultCost = delegate.boardingCost(
       firstBoarding,
       prevArrivalTime,
