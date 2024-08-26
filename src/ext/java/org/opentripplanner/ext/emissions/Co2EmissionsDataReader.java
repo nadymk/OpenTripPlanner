@@ -38,17 +38,11 @@ public class Co2EmissionsDataReader {
    * @param directory
    * @return emissions data
    */
-  public Map<FeedScopedId, Double> readGtfs(File directory) {
+  public Map<String, Integer> readGtfs(File directory) {
     String feedId = "";
-    File feedFile = new File(directory + "/feed_info.txt");
+//    File feedFile = new File(directory + "/feed_info.txt");
     File emissionsFile = new File(directory + "/emissions.txt");
-    if (feedFile.exists() && emissionsFile.exists()) {
-      try (InputStream feedInfoStream = new FileInputStream(feedFile)) {
-        feedId = readFeedId(feedInfoStream);
-      } catch (IOException e) {
-        issueStore.add("InvalidEmissionData", "Reading feed_info.txt failed.");
-        LOG.error("InvalidEmissionData: reading feed_info.txt failed.", e);
-      }
+    if (emissionsFile.exists()) {
       try (InputStream stream = new FileInputStream(emissionsFile)) {
         return readEmissions(stream, feedId);
       } catch (IOException e) {
@@ -64,14 +58,14 @@ public class Co2EmissionsDataReader {
    * @param file
    * @return emissions data
    */
-  public Map<FeedScopedId, Double> readGtfsZip(File file) {
+  public Map<String, Integer> readGtfsZip(File file) {
     try (ZipFile zipFile = new ZipFile(file, ZipFile.OPEN_READ)) {
       ZipEntry feedInfo = zipFile.getEntry("feed_info.txt");
       ZipEntry emissions = zipFile.getEntry("emissions.txt");
       if (emissions != null && feedInfo != null) {
         String feedId = readFeedId(zipFile.getInputStream(feedInfo));
         InputStream stream = zipFile.getInputStream(emissions);
-        Map<FeedScopedId, Double> emissionsData = readEmissions(stream, feedId);
+        Map<String, Integer> emissionsData = readEmissions(stream, feedId);
         zipFile.close();
         return emissionsData;
       }
@@ -82,55 +76,40 @@ public class Co2EmissionsDataReader {
     return Map.of();
   }
 
-  private Map<FeedScopedId, Double> readEmissions(InputStream stream, String feedId)
+  private Map<String, Integer> readEmissions(InputStream stream, String feedId)
     throws IOException {
-    Map<FeedScopedId, Double> emissionsData = new HashMap<>();
+    Map<String, Integer> emissionsData = new HashMap<>();
     CsvReader reader = new CsvReader(stream, StandardCharsets.UTF_8);
     reader.readHeaders();
 
     while (reader.readRecord()) {
-      String routeId = reader.get("route_id");
-      String avgCo2PerVehiclePerKmString = reader.get("avg_co2_per_vehicle_per_km");
-      String avgPassengerCountString = reader.get("avg_passenger_count");
+      String stopId = reader.get("stop_id");
+      String occupancy = reader.get("occupancy");
 
-      if (!StringUtils.hasValue(routeId)) {
+      if (!StringUtils.hasValue(stopId)) {
         issueStore.add(
           "InvalidEmissionData",
-          "Value for routeId is missing in the emissions.txt for line: %s.",
+          "Value for stopId is missing in the emissions.txt for line: %s.",
           reader.getRawRecord()
         );
       }
-      if (!StringUtils.hasValue(avgCo2PerVehiclePerKmString)) {}
+      if (!StringUtils.hasValue(occupancy)) {}
       {
         issueStore.add(
           "InvalidEmissionData",
-          "Value for avg_co2_per_vehicle_per_km is missing in the emissions.txt for route %s",
-          routeId
+          "Value for occupancy is missing in the emissions.txt for route %s",
+          stopId
         );
       }
-      if (!StringUtils.hasValue(avgPassengerCountString)) {
-        issueStore.add(
-          "InvalidEmissionData",
-          "Value for avg_passenger_count is missing in the emissions.txt for route %s",
-          routeId
-        );
-      }
+
       if (
         StringUtils.hasValue(feedId) &&
-        StringUtils.hasValue(routeId) &&
-        StringUtils.hasValue(avgCo2PerVehiclePerKmString) &&
-        StringUtils.hasValue(avgPassengerCountString)
+        StringUtils.hasValue(stopId) &&
+        StringUtils.hasValue(occupancy)
       ) {
-        Double avgCo2PerVehiclePerMeter = Double.parseDouble(avgCo2PerVehiclePerKmString) / 1000;
-        Double avgPassengerCount = Double.parseDouble(reader.get("avg_passenger_count"));
-        Optional<Double> emissions = calculateEmissionsPerPassengerPerMeter(
-          routeId,
-          avgCo2PerVehiclePerMeter,
-          avgPassengerCount
-        );
-        if (emissions.isPresent()) {
-          emissionsData.put(new FeedScopedId(feedId, routeId), emissions.get());
-        }
+        Optional<Integer> value = Optional.of(Integer.parseInt(occupancy));
+
+        value.ifPresent(integer -> emissionsData.put(stopId, integer));
       }
     }
     return emissionsData;

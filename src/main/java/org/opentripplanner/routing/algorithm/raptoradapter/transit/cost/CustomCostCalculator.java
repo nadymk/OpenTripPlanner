@@ -40,7 +40,7 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
 
     var emissions = (int) emissionsService.getAvgOccupancy().get();
 
-    System.out.println("Default Cost: " + defaultCost + " avgOccupancy: " + emissions);
+    System.out.println("boardingCost - Default Cost: " + defaultCost + " avgOccupancy: " + emissions);
     System.out.println(emissionsService.getAvgOccupancy());
     System.out.println("boardStop: " + boardStop + " boardTime: " + boardTime);
     System.out.println("firstBoarding: " + firstBoarding + " prevArrivalTime: " + prevArrivalTime);
@@ -51,6 +51,7 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
 
   @Override
   public int onTripRelativeRidingCost(int boardTime, T tripScheduledBoarded) {
+    System.out.println("onTripRelativeRidingCost - tripScheduledBoarded: " + tripScheduledBoarded + "");
     return delegate.onTripRelativeRidingCost(boardTime, tripScheduledBoarded);
   }
 
@@ -62,6 +63,10 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
     T trip,
     int toStop
   ) {
+    System.out.println("transitArrivalCost - boardCost: " + boardCost + "");
+    System.out.println("alightSlack: " + alightSlack + " transitTime: " + transitTime);
+    System.out.println("trip: " + trip + " toStop: " + toStop);
+
     return delegate.transitArrivalCost(boardCost, alightSlack, transitTime, trip, toStop);
   }
 
@@ -77,6 +82,7 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
 
   @Override
   public int costEgress(RaptorAccessEgress egress) {
+    System.out.println("costEgress - egress: " + egress + "");
     return delegate.costEgress(egress);
   }
 }

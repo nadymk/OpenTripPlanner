@@ -11,14 +11,15 @@ import org.opentripplanner.transit.model.framework.FeedScopedId;
  */
 public class EmissionsDataModel implements Serializable {
 
-  private Map<FeedScopedId, Double> co2Emissions;
+  private Map<String, Integer> co2Emissions;
   private Double carAvgCo2PerMeter;
   private Integer avgOccupancy;
 
   @Inject
-  public EmissionsDataModel() {}
+  public EmissionsDataModel() {
+  }
 
-  public EmissionsDataModel(Map<FeedScopedId, Double> co2Emissions, double carAvgCo2PerMeter, int avgOccupancy) {
+  public EmissionsDataModel(Map<String, Integer> co2Emissions, double carAvgCo2PerMeter, int avgOccupancy) {
     this.co2Emissions = co2Emissions;
     this.carAvgCo2PerMeter = carAvgCo2PerMeter;
     this.avgOccupancy = avgOccupancy;
@@ -32,7 +33,7 @@ public class EmissionsDataModel implements Serializable {
     return Optional.ofNullable(this.avgOccupancy);
   }
 
-  public void setCo2Emissions(Map<FeedScopedId, Double> co2Emissions) {
+  public void setCo2Emissions(Map<String, Integer> co2Emissions) {
     this.co2Emissions = co2Emissions;
   }
 
@@ -45,6 +46,15 @@ public class EmissionsDataModel implements Serializable {
   }
 
   public Optional<Double> getCO2EmissionsById(FeedScopedId feedScopedRouteId) {
-    return Optional.ofNullable(this.co2Emissions.get(feedScopedRouteId));
+    return Optional.ofNullable(null);
+//    return Optional.ofNullable(this.co2Emissions.get(feedScopedRouteId));
+  }
+
+  public Optional<Integer> getOccupancy(String stopId) {
+    if (this.co2Emissions.containsKey(stopId)) {
+      return Optional.ofNullable(this.co2Emissions.get(stopId));
+    }
+
+    return Optional.ofNullable(this.avgOccupancy);
   }
 }

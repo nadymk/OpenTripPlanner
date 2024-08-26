@@ -27,7 +27,7 @@ public class DefaultEmissionsService implements EmissionsService {
 
   @Override
   public Optional<Integer> getAvgOccupancy() {
-    return this.emissionsDataModel.getAvgOccupancy();
+    return this.emissionsDataModel.getOccupancy("STOP_ID");
   }
 
   @Override
