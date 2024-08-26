@@ -1,0 +1,2 @@
+stop_id,occupancy
+9400ZZLUACT3,100
