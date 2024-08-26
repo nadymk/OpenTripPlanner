@@ -91,8 +91,7 @@ public class Co2EmissionsDataReader {
           reader.getRawRecord()
         );
       }
-      if (!StringUtils.hasValue(occupancy)) {}
-      {
+      if (!StringUtils.hasValue(occupancy)) {
         issueStore.add(
           "InvalidEmissionData",
           "Value for occupancy is missing in the emissions.txt for route %s",
