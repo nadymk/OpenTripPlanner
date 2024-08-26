@@ -2,7 +2,31 @@
 {
   "transitServiceStart": "2024-06-08",
   "transitServiceEnd": "2024-12-14",
+  "osmCacheDataInMem": true,
   "osmWayPropertySet": "uk",
+  "osmDefaults": {
+    "timeZone": "Europe/London",
+    "osmTagMapping": "default"
+  },
+  "osm": [
+    {
+      "source": "./greater-london-latest.osm.pbf",
+      "timeZone": "Europe/London",
+      "osmTagMapping": "uk"
+    }
+  ],
+  "transitFeeds": [
+    {
+      "type": "gtfs",
+      "feedId": "NR",
+      "source": "./LondonNationalRailFilteredSansTransfer.gtfs.zip"
+    },
+    {
+      "type": "gtfs",
+      "feedId": "TFL",
+      "source": "./LondonTfL.gtfs.zip"
+    }
+  ],
   "emissions": {
     "avgOccupancy": 40,
     "carAvgCo2PerKm": 170,
