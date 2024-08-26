@@ -1,4 +1,6 @@
 //otp-config.json
 {
-  "Co2Emissions": true
-}
+  "otpFeatures": {
+    "Co2Emissions": true
+  }
+},

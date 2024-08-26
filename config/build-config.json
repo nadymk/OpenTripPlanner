@@ -1,18 +1,15 @@
 // build-config.json
 {
- 
-  "transitServiceStart" : "2024-06-08",
-   
-  "transitServiceEnd" : "2024-12-14",
+  "transitServiceStart": "2024-06-08",
+  "transitServiceEnd": "2024-12-14",
   "osmWayPropertySet": "uk",
-  "emissions" : {
+  "emissions": {
     "avgOccupancy": 40,
-    "carAvgCo2PerKm" : 170,
-    "carAvgOccupancy" : 1.3
+    "carAvgCo2PerKm": 170,
+    "carAvgOccupancy": 1.2
   }
 }
 
-#  "transitServiceStart" : "2020-02-04",
-   
-#"transitServiceEnd" : "2020-08-07",
+#  "transitServiceStart": "2020-02-04",
+#"transitServiceEnd": "2020-08-07",
 # "osmWayPropertySet": "uk"
