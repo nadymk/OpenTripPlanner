@@ -58,8 +58,10 @@ public class EmissionsModule implements GraphBuilderModule {
       LOG.info("Source: " + gtfsData.dataSource().uri().toString());
       Map<String, Integer> co2Emissions;
       if (gtfsData.dataSource().name().contains(".zip")) {
+        LOG.info("Loading source as a zip file");
         co2Emissions = co2EmissionsDataReader.readGtfsZip(new File(gtfsData.dataSource().uri()));
       } else {
+        LOG.info("Loading source as raw file");
         co2Emissions = co2EmissionsDataReader.readGtfs(new File(gtfsData.dataSource().uri()));
       }
       emissionsData.putAll(co2Emissions);

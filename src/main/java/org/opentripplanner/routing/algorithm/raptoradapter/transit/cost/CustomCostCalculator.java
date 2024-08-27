@@ -12,14 +12,14 @@ import org.opentripplanner.transit.model.site.StopLocation;
 public class CustomCostCalculator<T extends DefaultTripSchedule>
   implements RaptorCostCalculator<T> {
 
-  private final RaptorCostCalculator<T> delegate;
+//  private final RaptorCostCalculator<T> delegate;
   private final EmissionsService emissionsService;
 
   public CustomCostCalculator(
-    @Nonnull RaptorCostCalculator<T> delegate,
+//    @Nonnull RaptorCostCalculator<T> delegate,
     @Nonnull EmissionsService emissionsService
   ) {
-    this.delegate = delegate;
+//    this.delegate = delegate;
     this.emissionsService = emissionsService;
   }
 
@@ -45,7 +45,7 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
       }
 
 
-      System.out.println(id);
+//      System.out.println(id);
 //      System.out.println(location.getId().getId());
 //      System.out.println(((TripScheduleWithOffset) trip).getOriginalTripPattern().getName());
 //      System.out.println(((TripScheduleWithOffset) trip).getOriginalTripPattern().getStop(boardStop));
@@ -54,30 +54,31 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
 //      System.out.println(((TripScheduleWithOffset) trip).getOriginalTripPattern().getStops());
     }
 
-    int defaultCost = delegate.boardingCost(
-      firstBoarding,
-      prevArrivalTime,
-      boardStop,
-      boardTime,
-      trip,
-      transferConstraints
-    );
+//    int defaultCost = delegate.boardingCost(
+//      firstBoarding,
+//      prevArrivalTime,
+//      boardStop,
+//      boardTime,
+//      trip,
+//      transferConstraints
+//    );
 
     var emissions = (int) emissionsService.getAvgOccupancy(id).get();
 
-    System.out.println("boardingCost - Default Cost: " + defaultCost + " avgOccupancy: " + emissions);
-    System.out.println(emissionsService.getAvgOccupancy(id));
-    System.out.println("boardStop: " + boardStop + " boardTime: " + boardTime);
-    System.out.println("firstBoarding: " + firstBoarding + " prevArrivalTime: " + prevArrivalTime);
-    System.out.println("trip: " + trip + " transferConstraints: " + transferConstraints);
+//    System.out.println("boardingCost - Default Cost: " + defaultCost + " avgOccupancy: " + emissions);
+    System.out.println(id + " - " + emissionsService.getAvgOccupancy(id));
+//    System.out.println("boardStop: " + boardStop + " boardTime: " + boardTime);
+//    System.out.println("firstBoarding: " + firstBoarding + " prevArrivalTime: " + prevArrivalTime);
+//    System.out.println("trip: " + trip + " transferConstraints: " + transferConstraints);
 
-    return defaultCost + emissions;
+    return emissions;
   }
 
   @Override
   public int onTripRelativeRidingCost(int boardTime, T tripScheduledBoarded) {
-    System.out.println("onTripRelativeRidingCost - tripScheduledBoarded: " + tripScheduledBoarded + "");
-    return delegate.onTripRelativeRidingCost(boardTime, tripScheduledBoarded);
+//    System.out.println("onTripRelativeRidingCost - tripScheduledBoarded: " + tripScheduledBoarded + "");
+//    return delegate.onTripRelativeRidingCost(boardTime, tripScheduledBoarded);
+    return 0;
   }
 
   @Override
@@ -88,26 +89,30 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
     T trip,
     int toStop
   ) {
-    System.out.println("transitArrivalCost - boardCost: " + boardCost + "");
-    System.out.println("alightSlack: " + alightSlack + " transitTime: " + transitTime);
-    System.out.println("trip: " + trip + " toStop: " + toStop);
+//    System.out.println("transitArrivalCost - boardCost: " + boardCost + "");
+//    System.out.println("alightSlack: " + alightSlack + " transitTime: " + transitTime);
+//    System.out.println("trip: " + trip + " toStop: " + toStop);
 
-    return delegate.transitArrivalCost(boardCost, alightSlack, transitTime, trip, toStop);
+//    return delegate.transitArrivalCost(boardCost, alightSlack, transitTime, trip, toStop);
+    return 0;
   }
 
   @Override
   public int waitCost(int waitTimeInSeconds) {
-    return delegate.waitCost(waitTimeInSeconds);
+    return 0;
+//    return delegate.waitCost(waitTimeInSeconds);
   }
 
   @Override
   public int calculateMinCost(int minTravelTime, int minNumTransfers) {
-    return delegate.calculateMinCost(minTravelTime, minNumTransfers);
+//    return delegate.calculateMinCost(minTravelTime, minNumTransfers);
+    return 0;
   }
 
   @Override
   public int costEgress(RaptorAccessEgress egress) {
-    System.out.println("costEgress - egress: " + egress + "");
-    return delegate.costEgress(egress);
+//    System.out.println("costEgress - egress: " + egress + "");
+//    return delegate.costEgress(egress);
+    return 0;
   }
 }

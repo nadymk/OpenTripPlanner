@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class handles reading the CO₂ emissions data from the files in the GTFS package
- * and saving it in a map.
+ * This class handles reading the CO₂ emissions data from the files in the GTFS package and saving
+ * it in a map.
  */
 @Sandbox
 public class Co2EmissionsDataReader {
@@ -35,7 +35,7 @@ public class Co2EmissionsDataReader {
 
   /**
    * Read files in a GTFS directory.
-   * @param directory
+   *
    * @return emissions data
    */
   public Map<String, Integer> readGtfs(File directory) {
@@ -55,15 +55,20 @@ public class Co2EmissionsDataReader {
 
   /**
    * Read files in a GTFS zip file.
-   * @param file
+   *
    * @return emissions data
    */
   public Map<String, Integer> readGtfsZip(File file) {
     try (ZipFile zipFile = new ZipFile(file, ZipFile.OPEN_READ)) {
+      zipFile.stream().toList().forEach(f -> {
+        LOG.info("File: " + f.getName());
+      });
+
       ZipEntry emissions = zipFile.getEntry("emissions.txt");
       if (emissions != null) {
+        LOG.info("emissions.txt: " + emissions.toString());
         InputStream stream = zipFile.getInputStream(emissions);
-        Map<String, Integer> emissionsData = readEmissions(stream, "");
+        Map<String, Integer> emissionsData = readEmissions(stream, "non-whitespace");
         zipFile.close();
         return emissionsData;
       }
@@ -100,11 +105,13 @@ public class Co2EmissionsDataReader {
       }
 
       if (
-        StringUtils.hasValue(feedId) &&
-        StringUtils.hasValue(stopId) &&
-        StringUtils.hasValue(occupancy)
+          StringUtils.hasValue(stopId) &&
+          StringUtils.hasValue(occupancy)
       ) {
         Optional<Integer> value = Optional.of(Integer.parseInt(occupancy));
+
+        LOG.info(value.toString());
+        LOG.info("Stop Id: " + stopId + " Occupancy: " + occupancy);
 
         value.ifPresent(integer -> emissionsData.put(stopId, integer));
       }

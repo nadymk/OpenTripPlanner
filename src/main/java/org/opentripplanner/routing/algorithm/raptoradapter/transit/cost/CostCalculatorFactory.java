@@ -10,34 +10,34 @@ public class CostCalculatorFactory {
     int[] stopBoardAlightCosts,
     EmissionsService emissionsService
   ) {
-    RaptorCostCalculator<T> calculator = new DefaultCostCalculator<>(
-      generalizedCostParameters,
-      stopBoardAlightCosts
-    );
+//    RaptorCostCalculator<T> calculator = new DefaultCostCalculator<>(
+//      generalizedCostParameters,
+//      stopBoardAlightCosts
+//    );
 
     // custom calculator added here
-    calculator = new CustomCostCalculator<>(
-      calculator,
+    RaptorCostCalculator<T>   calculator = new CustomCostCalculator<>(
+//      calculator,
       emissionsService
     );
 
-    if (generalizedCostParameters.wheelchairEnabled()) {
-      calculator =
-        new WheelchairCostCalculator<>(
-          calculator,
-          generalizedCostParameters.wheelchairAccessibility()
-        );
-    }
-
-    // append RouteCostCalculator to calculator stack if (un)preferred routes exist
-    if (!generalizedCostParameters.unpreferredPatterns().isEmpty()) {
-      calculator =
-        new PatternCostCalculator<>(
-          calculator,
-          generalizedCostParameters.unpreferredPatterns(),
-          generalizedCostParameters.unnpreferredCost()
-        );
-    }
+//    if (generalizedCostParameters.wheelchairEnabled()) {
+//      calculator =
+//        new WheelchairCostCalculator<>(
+//          calculator,
+//          generalizedCostParameters.wheelchairAccessibility()
+//        );
+//    }
+//
+//    // append RouteCostCalculator to calculator stack if (un)preferred routes exist
+//    if (!generalizedCostParameters.unpreferredPatterns().isEmpty()) {
+//      calculator =
+//        new PatternCostCalculator<>(
+//          calculator,
+//          generalizedCostParameters.unpreferredPatterns(),
+//          generalizedCostParameters.unnpreferredCost()
+//        );
+//    }
 
     return calculator;
   }
