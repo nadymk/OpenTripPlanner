@@ -8,14 +8,14 @@ import {
   VectorTileSource,
 } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { TripPattern, TripQuery, TripQueryVariables } from '../../gql/graphql.ts';
-import { NavigationMarkers } from './NavigationMarkers.tsx';
-import { LegLines } from './LegLines.tsx';
-import { useMapDoubleClick } from './useMapDoubleClick.ts';
+import { TripPattern, TripQuery, TripQueryVariables } from '../../gql/graphql';
+import { NavigationMarkers } from './NavigationMarkers';
+import { LegLines } from './LegLines';
+import { useMapDoubleClick } from './useMapDoubleClick';
 import { useState } from 'react';
-import { ContextMenuPopup } from './ContextMenuPopup.tsx';
-import { GeometryPropertyPopup } from './GeometryPropertyPopup.tsx';
-import DebugLayerControl from './LayerControl.tsx';
+import { ContextMenuPopup } from './ContextMenuPopup';
+import { GeometryPropertyPopup } from './GeometryPropertyPopup';
+import DebugLayerControl from './LayerControl';
 
 const styleUrl = import.meta.env.VITE_DEBUG_STYLE_URL;
 

@@ -1,8 +1,8 @@
-import { TripPattern } from '../../gql/graphql.ts';
-import { TIME_BOX_WIDTH, useHeaderContentStyleCalculations } from './useHeaderContentStyleCalculations.ts';
-import { ItineraryHeaderLegContent } from './ItineraryHeaderLegContent.tsx';
+import { TripPattern } from '../../gql/graphql';
+import { TIME_BOX_WIDTH, useHeaderContentStyleCalculations } from './useHeaderContentStyleCalculations';
+import { ItineraryHeaderLegContent } from './ItineraryHeaderLegContent';
 import { useMemo } from 'react';
-import { formatTime } from '../../util/formatTime.ts';
+import { formatTime } from '../../util/formatTime';
 
 export function ItineraryHeaderContent({
   tripPattern,
@@ -35,8 +35,7 @@ export function ItineraryHeaderContent({
   );
 
   return (
-    <div className="itinerary-header-wrapper">
-      <div className="itinerary-header-itinerary-number">{itineraryIndex + 1}.</div>
+    <div className="itinerary-header-wrapper relative">
       <div
         className="itinerary-header-itinerary-line"
         style={{
@@ -44,14 +43,15 @@ export function ItineraryHeaderContent({
           left: `${leftPx - 2}px`,
         }}
       />
-      <div
+
+      {/* <div
         className="itinerary-header-itinerary-time"
         style={{
           left: `${leftPx - TIME_BOX_WIDTH}px`,
         }}
       >
         {formattedStartTime}
-      </div>
+      </div> */}
 
       {tripPattern.legs.map((leg, i) => (
         <ItineraryHeaderLegContent
@@ -64,14 +64,14 @@ export function ItineraryHeaderContent({
         />
       ))}
 
-      <div
+      {/* <div
         className="itinerary-header-itinerary-time"
         style={{
           left: `${leftPx + widthPx + 2}px`,
         }}
       >
         {formattedEndTime}
-      </div>
+      </div> */}
     </div>
   );
 }

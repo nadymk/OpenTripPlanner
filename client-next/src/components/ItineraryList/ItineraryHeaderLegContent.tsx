@@ -31,7 +31,7 @@ export function ItineraryHeaderLegContent({
 
   return (
     <div
-      className="itinerary-header-leg-wrapper"
+      className="itinerary-header-leg-wrapper !h-[12px]"
       style={{
         width: `${widthPx}px`,
         left: leftPx,
@@ -39,15 +39,15 @@ export function ItineraryHeaderLegContent({
         background: modeColor,
       }}
     >
-      <div
+      {/* <div
         className="itinerary-header-leg-icon"
         style={{
           background: legTextColor,
           maskImage: `url(${legIconImageUrl})`,
           WebkitMaskImage: `url(${legIconImageUrl})`,
         }}
-      ></div>
-      {showPublicCode && <span className="itinerary-header-leg-public-code">{leg.line?.publicCode}</span>}
+      ></div> */}
+      {/* {showPublicCode && <span className="itinerary-header-leg-public-code">{leg.line?.publicCode}</span>} */}
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { formatTime } from '../../util/formatTime.ts';
+import * as dayjs from 'dayjs';
+import { formatTime } from '../../util/formatTime';
 
 export function LegTime({
   aimedTime,
@@ -16,7 +17,7 @@ export function LegTime({
     </>
   ) : (
     <span>
-      {formatTime(expectedTime)}
+      {dayjs(expectedTime).format('HH:mm')}
       {hasRealtime && <span> (on time)</span>}
     </span>
   );

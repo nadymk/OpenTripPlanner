@@ -1,11 +1,11 @@
 import { Stack } from 'react-bootstrap';
-import { MapView } from '../components/MapView/MapView.tsx';
-import { SearchBar } from '../components/SearchBar/SearchBar.tsx';
-import { ItineraryListContainer } from '../components/ItineraryList/ItineraryListContainer.tsx';
+import { MapView } from '../components/MapView/MapView';
+import { SearchBar } from '../components/SearchBar/SearchBar';
+import { ItineraryListContainer } from '../components/ItineraryList/ItineraryListContainer';
 import { useState } from 'react';
-import { TripQueryVariables } from '../gql/graphql.ts';
-import { useTripQuery } from '../hooks/useTripQuery.ts';
-import { useServerInfo } from '../hooks/useServerInfo.ts';
+import { TripQueryVariables } from '../gql/graphql';
+import { useTripQuery } from '../hooks/useTripQuery';
+import { useServerInfo } from '../hooks/useServerInfo';
 
 const INITIAL_VARIABLES: TripQueryVariables = {
   from: {},

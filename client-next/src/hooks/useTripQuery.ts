@@ -34,11 +34,26 @@ const query = graphql(`
     ) {
       previousPageCursor
       nextPageCursor
+      debugOutput {
+        totalTime
+      }
+      
+      fromPlace {
+        name
+        latitude
+        longitude
+      }
+      toPlace {
+        name
+        latitude
+        longitude
+      }
       tripPatterns {
         aimedStartTime
         aimedEndTime
         expectedEndTime
         expectedStartTime
+        generalizedCost
         duration
         distance
         legs {
@@ -48,16 +63,47 @@ const query = graphql(`
           aimedEndTime
           expectedEndTime
           expectedStartTime
+          generalizedCost
           realtime
           distance
+          intermediateQuays {
+            name
+            latitude
+            longitude
+            publicCode
+          }
+          # serviceJourney {
+          #   publicCode
+          #   privateCode
+          #   quays {
+          #     name
+          #     latitude
+          #     longitude
+          #     publicCode
+          #   }
+          # }
           duration
           fromPlace {
             name
+            latitude
+            longitude
           }
           toPlace {
             name
+            latitude
+            longitude
           }
           toEstimatedCall {
+            quay {
+              name
+              latitude
+              longitude
+              publicCode
+              stopPlace {
+                id
+                name
+              }
+            }
             destinationDisplay {
               frontText
             }
