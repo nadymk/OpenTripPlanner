@@ -184,6 +184,7 @@ export const GeneralDetails: FC<{
       <Badge>GC {leg.generalizedCost}</Badge>
       <Badge>{formatDistance(leg.distance)}</Badge>
       <Badge>{dayjs.duration(leg.duration, 'seconds').format('HH:mm:ss')}</Badge>
+      <Badge>{leg.duration + ' s'}</Badge>
       {walkingTime > 0 && <Badge>{secondsToHms(walkingTime, 'short')} walk</Badge>}
       {/* <Badge>{leg.distance} m</Badge> */}
       {leg.mode && <Badge>{leg.mode}</Badge>}

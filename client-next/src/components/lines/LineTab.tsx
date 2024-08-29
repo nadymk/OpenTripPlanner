@@ -3,7 +3,8 @@ import { Button, Spinner } from 'react-bootstrap';
 import { Line, QueryType } from '../../gql/graphql';
 import { useRoutesQuery } from '../../hooks/useRoutesQuery';
 import { LegIcon } from '../icons/TransitIcons';
-import { ItineraryLegDetails, LineDetails } from '../ItineraryList/ItineraryLegDetails';
+import { ItineraryLegDetails } from '../ItineraryList/ItineraryLegDetails';
+import { LineDetails } from './LineBarDisplay';
 
 export const LineTab: FC<{
     index: number;
