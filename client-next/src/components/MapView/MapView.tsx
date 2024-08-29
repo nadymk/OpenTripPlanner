@@ -93,9 +93,9 @@ export function MapView({
           loading={loading}
         />
         <DebugLayerControl position="top-right" />
-        {/* {tripQueryResult?.trip.tripPatterns.length && (
+        {tripQueryResult?.trip.tripPatterns.length && (
           <LegLines tripPattern={tripQueryResult.trip.tripPatterns[selectedTripPatternIndex] as TripPattern} />
-        )} */}
+        )}
         {selectedLine && (
           <LegLines2 selectedLine={selectedLine} />
         )}

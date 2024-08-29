@@ -3,13 +3,16 @@ import { Button, Spinner } from 'react-bootstrap';
 import { Line, QueryType } from '../../gql/graphql';
 import { useRoutesQuery } from '../../hooks/useRoutesQuery';
 import { LegIcon } from '../icons/TransitIcons';
+import { ItineraryLegDetails, LineDetails } from '../ItineraryList/ItineraryLegDetails';
 
 export const LineTab: FC<{
+    index: number;
   data: QueryType | null;
   isLoading: boolean;
   onRefresh: (pageCursor?: string) => Promise<void>;
+  selectedLine?: Line;
   onLineSelected: (line: Line) => void;
-}> = ({ data, isLoading, onRefresh, onLineSelected }) => {
+}> = ({ index, data, isLoading, onRefresh, selectedLine, onLineSelected }) => {
   //   useEffect(() => {
   //     refetch();
   //   }, []);
@@ -37,20 +40,32 @@ export const LineTab: FC<{
               <LocationInputField location={tripQueryVariables.to} label="To" id="toInputField" /> */}
           </div>
           {isLoading && <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />}
-          <div className="flex flex-col h-full pb-6">
-            {data?.lines
-              .sort((a, b) => a?.name?.localeCompare(b.name))
-              ?.map((line) => (
-                <div
-                  key={line.id}
-                  className="flex flex-row items-center h-full w-full border-b py-3 px-3 hover:bg-gray-100 hover:cursor-pointer space-x-2"
-                  onClick={() => onLineSelected(line)}
-                >
-                  <LegIcon leg={line} />
-                  <span className="truncate">{line?.name}</span>
-                </div>
-              ))}
-          </div>
+          {!selectedLine && (
+            <div className="flex flex-col h-full pb-6">
+              {data?.lines
+                .sort((a, b) => a?.name?.localeCompare(b.name))
+                ?.map((line) => (
+                  <div
+                    key={line.id}
+                    className="flex flex-row items-center h-full w-full border-b py-3 px-3 hover:bg-gray-100 hover:cursor-pointer space-x-2"
+                    onClick={() => onLineSelected(line)}
+                  >
+                    <LegIcon leg={line} />
+                    <span className="truncate">{line?.name}</span>
+                  </div>
+                ))}
+            </div>
+          )}{' '}
+          {selectedLine && (
+            <div className="flex flex-col h-full pb-6">
+              {selectedLine?.quays?.map((line, index) => {
+                const isFirst = index === 0;
+                const isLast = selectedLine.quays.length - 1 === index;
+
+                return <LineDetails leg={line} isFirst={isFirst} isLast={isLast} index={index} />;
+              })}
+            </div>
+          )}
           {/* <div className='fixed bottom-0 right-0 left-0 bg-white'>
               <ItineraryPaginationControl
                 onPagination={pageResults}

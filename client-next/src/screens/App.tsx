@@ -51,6 +51,7 @@ export function App() {
                 data={routesQueryResult}
                 isLoading={loadingRoutes}
                 onRefresh={callbackRoutes}
+                selectedLine={selectedLine}
                 onLineSelected={setSelectedLine}
               />
             )}

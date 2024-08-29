@@ -1,34 +1,16 @@
-import { Leg } from '../../gql/graphql';
-import { LegTime } from './LegTime';
-import { formatDistance } from '../../util/formatDistance';
 import dayjs from 'dayjs';
-import { cn } from '../../util/cn';
-import {
-  getOperatorColor,
-  isAuthority,
-  isBus,
-  isDLR,
-  isMode,
-  isOverground,
-  isRail,
-  isTfLRail,
-  isTransit,
-  isUnderground,
-} from '../../util/routes';
-import londonUndergroundIcon from '../../static/img/uk-london-underground.svg';
-import overgroundIcon from '../../static/img/uk-london-overground.svg';
-import elizabethLineIcon from '../../static/img/uk-london-tfl-elizabeth-train.svg';
-import walkIcon from '../../static/img/walk.svg';
-import busIcon from '../../static/img/uk-london-bus.svg';
-import dlrIcon from '../../static/img/uk-london-dlr.svg';
-import railIcon from '../../static/img/uk-rail.svg';
-import tramIcon from '../../static/img/uk-london-tramlink.svg';
-import cableCarIcon from '../../static/img/uk-london-ifs-cloud-cable-car.svg';
-import walkBarBackground from '../../static/img/leg-bullet-1x.png';
-import { Badge } from '../ui/Badge';
 import { FC, HTMLProps, useMemo } from 'react';
+import { Leg } from '../../gql/graphql';
+import walkBarBackground from '../../static/img/leg-bullet-1x.png';
+import { cn } from '../../util/cn';
+import { formatDistance } from '../../util/formatDistance';
+import {
+  getOperatorColor, isBus, isMode, isTransit
+} from '../../util/routes';
 import { secondsToHms } from '../../util/time';
 import { LegIcon } from '../icons/TransitIcons';
+import { Badge } from '../ui/Badge';
+import { LegTime } from './LegTime';
 
 export const ItineraryLegDetails: FC<{
   leg: Leg;
