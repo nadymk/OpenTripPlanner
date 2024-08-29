@@ -1,5 +1,5 @@
 import { Form } from 'react-bootstrap';
-import { TripQueryVariables } from '../../gql/graphql.ts';
+import { TripQueryVariables } from '../../gql/graphql';
 
 export function DepartureArrivalSelect({
   tripQueryVariables,

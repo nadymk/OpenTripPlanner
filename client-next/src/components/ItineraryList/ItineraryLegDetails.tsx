@@ -5,13 +5,14 @@ import dayjs from 'dayjs';
 import { cn } from '../../util/cn';
 import {
   getOperatorColor,
+  isAuthority,
   isBus,
   isDLR,
-  isLine,
   isMode,
   isOverground,
   isRail,
   isTfLRail,
+  isTransit,
   isUnderground,
 } from '../../util/routes';
 import londonUndergroundIcon from '../../static/img/uk-london-underground.svg';
@@ -21,9 +22,13 @@ import walkIcon from '../../static/img/walk.svg';
 import busIcon from '../../static/img/uk-london-bus.svg';
 import dlrIcon from '../../static/img/uk-london-dlr.svg';
 import railIcon from '../../static/img/uk-rail.svg';
+import tramIcon from '../../static/img/uk-london-tramlink.svg';
+import cableCarIcon from '../../static/img/uk-london-ifs-cloud-cable-car.svg';
 import walkBarBackground from '../../static/img/leg-bullet-1x.png';
 import { Badge } from '../ui/Badge';
-import { FC, HTMLProps } from 'react';
+import { FC, HTMLProps, useMemo } from 'react';
+import { secondsToHms } from '../../util/time';
+import { LegIcon } from '../icons/TransitIcons';
 
 export const ItineraryLegDetails: FC<{
   leg: Leg;
@@ -32,12 +37,9 @@ export const ItineraryLegDetails: FC<{
   isFirst: boolean;
   isLast: boolean;
 }> = ({ leg, isFirst, isLast, previousLeg, nextLeg }) => {
-  const isTransit = (leg?: Leg) => {
-    if (!leg) {
-      return false;
-    }
-
-    return leg.mode === 'rail' || leg.mode === 'metro' || leg.mode === 'bus';
+  const isLegStartSameAsLegEnd = () => {
+    return dayjs(previousLeg?.expectedEndTime).isSame(dayjs(leg.expectedStartTime));
+    // return true;
   };
 
   return (
@@ -60,10 +62,10 @@ export const ItineraryLegDetails: FC<{
           <div className="flex w-full relative">
             <LegDetailLeftContainer
               className={cn('', {
-                'flex-col items-end absolute right-0 -top-[8px]': isTransit(previousLeg),
+                'flex-col items-end absolute right-0 -top-[8px]': !isLegStartSameAsLegEnd(previousLeg, leg),
               })}
             >
-              {previousLeg && isTransit(previousLeg) && (
+              {previousLeg && !isLegStartSameAsLegEnd(previousLeg, leg) && (
                 <LegTime
                   aimedTime={previousLeg?.aimedEndTime}
                   expectedTime={previousLeg.expectedEndTime}
@@ -82,23 +84,10 @@ export const ItineraryLegDetails: FC<{
 
         <div className="flex w-full">
           <LegDetailLeftContainer className="text-sm flex flex-col space-y-1 relative items-end mr-6 py-[52px]">
-            {/* {isDLR(leg) && <img alt="" src={dlrIcon} className="w-[16px] h-[16px]" />}
-            {isOverground(leg) && <img alt="" src={overgroundIcon} className="w-[16px] h-[16px]" />}
-            {isUnderground(leg) && <img alt="" src={londonUndergroundIcon} className="w-[16px] h-[16px]" />}
-            {isTfLRail(leg) && <img alt="" src={elizabethLineIcon} className="w-[16px] h-[16px]" />}
-            {isMode(leg, 'foot') && <img alt="" src={walkIcon} className="w-[16px] h-[16px]" />}
-            {isBus(leg) && <img alt="" src={busIcon} className="w-[16px] h-[16px]" />}
-            {isRail(leg) && !isDLR(leg) && !isOverground(leg) && !isTfLRail(leg) && (
-              <img alt="" src={railIcon} className="w-[16px] h-[16px]" />
-            )} */}
-
             <LegIcon leg={leg} />
           </LegDetailLeftContainer>
 
           <div className="grow flex flex-row relative py-3">
-            {/* {leg.intermediateQuays.map((quay) => {
-              return <InterChangeDot />;
-            })} */}
             <Bar leg={leg} className="-top-[12px] -bottom-[12px]" />
             <div className="ml-6 pt-[26px] pb-[26px] border-y w-full">
               <div className="flex flex-col space-y-1">
@@ -164,12 +153,14 @@ export const ItineraryLegDetails: FC<{
   );
 };
 
-const AboutTime = ({ leg }) => {
+const AboutTime: FC<{
+  className?: string;
+}> = ({ leg }) => {
   const stops = leg.intermediateQuays?.length;
 
   return (
     <>
-      <span className="text-xs text-gray-700">{`${timeSince(leg.duration)} (${stops !== 0 ? `${stops} stops ` : ''}${formatDistance(leg.distance)})`}</span>
+      <span className="text-xs text-gray-700">{`${timeSince(leg.duration)} (${stops !== 0 ? `${stops + 1} stops ` : ''}${formatDistance(leg.distance)})`}</span>
     </>
   );
 };
@@ -199,30 +190,44 @@ export const timeSince = (seconds: number) => {
   return Math.floor(seconds) + ' seconds';
 };
 
-export const GeneralDetails = ({ classeName, leg }) => {
+export const GeneralDetails: FC<{
+  className?: string;
+  leg: Leg;
+}> = ({ className, leg }) => {
+  const transfers = (leg?.legs?.filter((leg) => leg.mode !== 'foot')?.length ?? 0) - 1;
+  const walkingTime = leg?.legs?.reduce((acc, leg) => (acc += leg.mode === 'foot' ? leg.duration : 0), 0);
+
   return (
-    <div className={cn('flex flex-wrap mt-3 gap-2', classeName)}>
+    <div className={cn('flex flex-wrap mt-3 gap-2', className)}>
       <Badge>GC {leg.generalizedCost}</Badge>
+      <Badge>{formatDistance(leg.distance)}</Badge>
       <Badge>{dayjs.duration(leg.duration, 'seconds').format('HH:mm:ss')}</Badge>
-      <Badge>{leg.distance} m</Badge>
+      {walkingTime > 0 && <Badge>{secondsToHms(walkingTime, 'short')} walk</Badge>}
+      {/* <Badge>{leg.distance} m</Badge> */}
       {leg.mode && <Badge>{leg.mode}</Badge>}
+      {transfers > 0 && (
+        <Badge>
+          {transfers} transfer{transfers === 1 ? '' : 's'}
+        </Badge>
+      )}
       {/* {leg.authority?.name && <Badge>{leg.authority?.name}</Badge>} */}
     </div>
   );
 };
 
-export const LineBadge = ({ leg, className }) => {
+export const LineBadge: FC<{
+  className?: string;
+  leg: Leg;
+}> = ({ leg, className }) => {
   const { text, color } = getOperatorColor(leg);
 
-  const getValue = () => {
+  const value = useMemo(() => {
     if (leg.line?.publicCode || isBus(leg)) {
       return leg.line?.publicCode;
     }
 
     return leg.authority?.name;
-  };
-
-  const value = getValue(leg);
+  }, [leg]);
 
   if (!value) {
     return null;
@@ -232,7 +237,6 @@ export const LineBadge = ({ leg, className }) => {
     <span
       style={{
         backgroundColor: color,
-        // color: getOperatorColor(leg)?.text + ' !important',
         color: text ? text : 'white',
       }}
       className={cn('font-semibold text-xs bg-red-600 rounded-sm px-1', className)}
@@ -242,7 +246,10 @@ export const LineBadge = ({ leg, className }) => {
   );
 };
 
-const Bar = ({ leg, className }) => {
+const Bar: FC<{
+  className?: string;
+  leg: Leg;
+}> = ({ leg, className }) => {
   const { text, color } = getOperatorColor(leg);
   return (
     <div
@@ -275,21 +282,5 @@ const LegDetailLeftContainer: FC<HTMLProps<HTMLDivElement>> = ({ children, class
         {children}
       </div>
     </div>
-  );
-};
-
-export const LegIcon = ({ leg }) => {
-  return (
-    <>
-      {isDLR(leg) && <img alt="" src={dlrIcon} className="w-[16px] h-[16px]" />}
-      {isOverground(leg) && <img alt="" src={overgroundIcon} className="w-[16px] h-[16px]" />}
-      {isUnderground(leg) && <img alt="" src={londonUndergroundIcon} className="w-[16px] h-[16px]" />}
-      {isTfLRail(leg) && <img alt="" src={elizabethLineIcon} className="w-[16px] h-[16px]" />}
-      {isMode(leg, 'foot') && <img alt="" src={walkIcon} className="w-[16px] h-[16px]" />}
-      {isBus(leg) && <img alt="" src={busIcon} className="w-[16px] h-[16px]" />}
-      {isRail(leg) && !isDLR(leg) && !isOverground(leg) && !isTfLRail(leg) && (
-        <img alt="" src={railIcon} className="w-[16px] h-[16px]" />
-      )}
-    </>
   );
 };

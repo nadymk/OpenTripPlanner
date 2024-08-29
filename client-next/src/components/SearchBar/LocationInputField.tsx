@@ -1,6 +1,6 @@
 import { Form } from 'react-bootstrap';
 import { COORDINATE_PRECISION } from './constants.ts';
-import { Location } from '../../gql/graphql.ts';
+import { Location } from '../../gql/graphql';
 
 export function LocationInputField({ location, id, label }: { location: Location; id: string; label: string }) {
   return (

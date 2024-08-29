@@ -1,20 +1,17 @@
 import { Button, Spinner } from 'react-bootstrap';
-import { ServerInfo, TripQueryVariables } from '../../gql/graphql.ts';
-import { LocationInputField } from './LocationInputField.tsx';
-import { DepartureArrivalSelect } from './DepartureArrivalSelect.tsx';
-import { TimeInputField } from './TimeInputField.tsx';
-import { DateInputField } from './DateInputField.tsx';
-import { SearchWindowInput } from './SearchWindowInput.tsx';
-import { AccessSelect } from './AccessSelect.tsx';
-import { EgressSelect } from './EgressSelect.tsx';
-import { DirectModeSelect } from './DirectModeSelect.tsx';
-import { TransitModeSelect } from './TransitModeSelect.tsx';
-import { NumTripPatternsInput } from './NumTripPatternsInput.tsx';
-import { ItineraryFilterDebugSelect } from './ItineraryFilterDebugSelect.tsx';
-import Navbar from 'react-bootstrap/Navbar';
-import { ServerInfoTooltip } from './ServerInfoTooltip.tsx';
+import { ServerInfo, TripQueryVariables } from '../../gql/graphql';
+import { LocationInputField } from './LocationInputField';
+import { DepartureArrivalSelect } from './DepartureArrivalSelect';
+import { TimeInputField } from './TimeInputField';
+import { DateInputField } from './DateInputField';
+import { SearchWindowInput } from './SearchWindowInput';
+import { AccessSelect } from './AccessSelect';
+import { EgressSelect } from './EgressSelect';
+import { DirectModeSelect } from './DirectModeSelect';
+import { TransitModeSelect } from './TransitModeSelect';
+import { NumTripPatternsInput } from './NumTripPatternsInput';
+import { ItineraryFilterDebugSelect } from './ItineraryFilterDebugSelect';
 import { useRef, useState } from 'react';
-import logo from '../../static/img/otp-logo.svg';
 
 type SearchBarProps = {
   onRoute: () => void;
@@ -29,37 +26,41 @@ export function SearchBar({ onRoute, tripQueryVariables, setTripQueryVariables, 
   const target = useRef(null);
 
   return (
-    <div className="search-bar top-content">
-      <Navbar.Brand onClick={() => setShowServerInfo((v) => !v)}>
-        <div style={{ position: 'relative' }} ref={target}>
-          <img alt="" src={logo} width="30" height="30" className="d-inline-block align-top" /> OTP Debug Client
-          {showServerInfo && <ServerInfoTooltip serverInfo={serverInfo} target={target} />}
+    <div className="w-full h-full">
+      <div className="h-full overflow-y-auto">
+        <div className="flex flex-col w-full p-3 border-bottom">
+          {JSON.stringify(serverInfo, null, 2)}
+          <LocationInputField location={tripQueryVariables.from} label="From" id="fromInputField" />
+          <LocationInputField location={tripQueryVariables.to} label="To" id="toInputField" />
+          <DepartureArrivalSelect
+            tripQueryVariables={tripQueryVariables}
+            setTripQueryVariables={setTripQueryVariables}
+          />
+          <TimeInputField tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <DateInputField tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
         </div>
-      </Navbar.Brand>
-      <LocationInputField location={tripQueryVariables.from} label="From" id="fromInputField" />
-      <LocationInputField location={tripQueryVariables.to} label="To" id="toInputField" />
-      <DepartureArrivalSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <TimeInputField tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <DateInputField tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <NumTripPatternsInput tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <SearchWindowInput tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <AccessSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <TransitModeSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <EgressSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <DirectModeSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
-      <ItineraryFilterDebugSelect
-        tripQueryVariables={tripQueryVariables}
-        setTripQueryVariables={setTripQueryVariables}
-      />
-      <div className="search-bar-route-button-wrapper">
-        <Button variant="primary" onClick={() => onRoute()} disabled={loading}>
-          {loading && (
-            <>
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-            </>
-          )}
-          Route
-        </Button>
+        <div className="flex flex-col w-full p-3 border-bottom">
+          <NumTripPatternsInput tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <SearchWindowInput tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <AccessSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <TransitModeSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <EgressSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <DirectModeSelect tripQueryVariables={tripQueryVariables} setTripQueryVariables={setTripQueryVariables} />
+          <ItineraryFilterDebugSelect
+            tripQueryVariables={tripQueryVariables}
+            setTripQueryVariables={setTripQueryVariables}
+          />
+        </div>
+        <div className="flex w-full justify-end p-3">
+          <Button variant="primary" onClick={() => onRoute()} disabled={loading}>
+            {loading && (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
+              </>
+            )}
+            Route
+          </Button>
+        </div>
       </div>
     </div>
   );

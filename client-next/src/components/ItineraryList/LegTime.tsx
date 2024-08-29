@@ -17,7 +17,7 @@ export function LegTime({
     </>
   ) : (
     <span>
-      {dayjs(expectedTime).format('HH:mm')}
+      {dayjs(expectedTime).format('HH:mm:ss')}
       {hasRealtime && <span> (on time)</span>}
     </span>
   );

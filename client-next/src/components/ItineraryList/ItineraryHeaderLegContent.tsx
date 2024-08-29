@@ -1,5 +1,5 @@
-import { Leg } from '../../gql/graphql.ts';
-import { useHeaderLegContentStyleCalculations } from './useHeaderLegContentStyleCalculations.ts';
+import { Leg } from '../../gql/graphql';
+import { useHeaderLegContentStyleCalculations } from './useHeaderLegContentStyleCalculations';
 const modeIcons = import.meta.glob('../../static/img/mode/*.png', { as: 'url', eager: true });
 
 function getModeIconUrl(leg: Leg) {

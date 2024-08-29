@@ -71,6 +71,9 @@ const query = graphql(`
             latitude
             longitude
             publicCode
+            estimatedCalls {
+              expectedArrivalTime
+            }
           }
           # serviceJourney {
           #   publicCode

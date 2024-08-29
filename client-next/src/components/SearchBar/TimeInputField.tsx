@@ -5,7 +5,9 @@ import { ChangeEvent, useCallback, useMemo } from 'react';
 export function TimeInputField({
   tripQueryVariables,
   setTripQueryVariables,
+  hideLabel
 }: {
+  hideLabel?: boolean;
   tripQueryVariables: TripQueryVariables;
   setTripQueryVariables: (tripQueryVariables: TripQueryVariables) => void;
 }) {
@@ -30,9 +32,11 @@ export function TimeInputField({
 
   return (
     <Form.Group>
-      <Form.Label column="sm" htmlFor="timePicker">
-        Time
-      </Form.Label>
+      {!hideLabel && (
+        <Form.Label column="sm" htmlFor="timePicker">
+          Time
+        </Form.Label>
+      )}
       <Form.Control type="time" id="timePicker" size="sm" onChange={onChange} value={current} />
     </Form.Group>
   );

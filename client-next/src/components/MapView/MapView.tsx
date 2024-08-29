@@ -10,7 +10,7 @@ import {
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { TripPattern, TripQuery, TripQueryVariables } from '../../gql/graphql';
 import { NavigationMarkers } from './NavigationMarkers';
-import { LegLines } from './LegLines';
+import { LegLines, LegLines2 } from './LegLines';
 import { useMapDoubleClick } from './useMapDoubleClick';
 import { useState } from 'react';
 import { ContextMenuPopup } from './ContextMenuPopup';
@@ -22,6 +22,7 @@ const styleUrl = import.meta.env.VITE_DEBUG_STYLE_URL;
 type PopupData = { coordinates: LngLat; feature: MapGeoJSONFeature };
 
 export function MapView({
+  selectedLine,
   tripQueryVariables,
   setTripQueryVariables,
   tripQueryResult,
@@ -63,7 +64,8 @@ export function MapView({
   };
 
   return (
-    <div className="map-container below-content">
+    <div className="map-container h-screen">
+    {/* <div className="map-container below-content"> */}
       <Map
         // @ts-ignore
         mapLib={import('maplibre-gl')}
@@ -80,7 +82,7 @@ export function MapView({
         // put lat/long in URL and pan to it on page reload
         hash={true}
         // disable pitching and rotating the map
-        touchPitch={false}
+        touchPitch={true}
         dragRotate={false}
         onLoad={panToWorldEnvelopeIfRequired}
       >
@@ -91,8 +93,11 @@ export function MapView({
           loading={loading}
         />
         <DebugLayerControl position="top-right" />
-        {tripQueryResult?.trip.tripPatterns.length && (
+        {/* {tripQueryResult?.trip.tripPatterns.length && (
           <LegLines tripPattern={tripQueryResult.trip.tripPatterns[selectedTripPatternIndex] as TripPattern} />
+        )} */}
+        {selectedLine && (
+          <LegLines2 selectedLine={selectedLine} />
         )}
         {showContextPopup && (
           <ContextMenuPopup

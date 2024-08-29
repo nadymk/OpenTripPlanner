@@ -1,22 +1,36 @@
 import { Leg } from '../gql/graphql';
 
-export const isDLR = (leg: Leg) => leg.mode === 'rail' && leg.authority?.name === 'Docklands Light Railway';
+export const isMode = (leg: Leg, mode: string) => leg?.mode === mode || leg?.transportMode === mode;
 
-export const isOverground = (leg: Leg) => leg.mode === 'rail' && leg.authority?.name === 'London Overground';
+export const isAuthority = (leg: Leg, authority: string) => leg?.authority?.name === authority;
 
-export const isTfLRail = (leg: Leg) => leg.mode === 'rail' && leg.authority?.name === 'TfL Rail';
+export const isDLR = (leg: Leg) => isRail(leg) && leg.authority?.name === 'Docklands Light Railway';
 
-export const isBus = (leg: Leg) => leg?.mode === 'bus';
+export const isOverground = (leg: Leg) => isRail(leg) && leg.authority?.name === 'London Overground';
 
-export const isUnderground = (leg: Leg) => leg.mode === 'metro' && leg.authority?.name === 'London Underground';
+export const isTfLRail = (leg: Leg) => isRail(leg) && leg.authority?.name === 'TfL Rail';
+
+export const isBus = (leg: Leg) => isMode(leg, 'bus');
+
+export const isMetro = (leg: Leg) => isMode(leg, 'metro');
+
+export const isUnderground = (leg: Leg) => isMetro(leg) && leg.authority?.name === 'London Underground';
 
 export const isLine = (leg: Leg, line: string) => leg.line?.publicCode === line;
-
-export const isMode = (leg: Leg, mode: string) => leg?.mode === mode;
 
 export const isRail = (leg: Leg) => isMode(leg, 'rail');
 
 export const isFoot = (leg: Leg) => isMode(leg, 'foot');
+
+export const isTransit = (leg?: Leg) => {
+  if (!leg) {
+    return false;
+  }
+
+  return (
+    isMode(leg, 'rail') || isMode(leg, 'tram') || isMode(leg, 'water') || leg.mode === 'metro' || leg.mode === 'bus'
+  );
+};
 
 const tubeColors = {
   'Circle line': {
@@ -34,7 +48,7 @@ const tubeColors = {
   },
   'Hammersmith & City line': {
     color: '#e89cae',
-    text: '#000000'
+    text: '#000000',
   },
   'Jubilee line': {
     color: '#7c878e',
@@ -52,14 +66,30 @@ const tubeColors = {
     color: '#000000',
     text: '#ffffff',
   },
-  'Waterloo and City line': {
+  'Waterloo & City line': {
     color: '#6eceb2',
-    text: '#ffffff',
+  },
+};
+
+const riverBusColors = {
+  RB1: {
+    color: '#2d3039',
+  },
+  RB2: {
+    color: '#0072bc',
+  },
+  RB4: {
+    color: '#61c29d',
+    text: '#000000',
+  },
+  RB6: {
+    color: '#df64b0',
   },
 };
 
 export const operatorColors = {
   ...tubeColors,
+  ...riverBusColors,
   'London Overground': {
     color: '#EE7C0E',
   },
@@ -87,14 +117,20 @@ export const operatorColors = {
   'TfL Rail': {
     color: '#6950a1',
   },
+  'London Trams': {
+    color: '#00bd19',
+  },
+  'London Cable Car': {
+    color: '#dc241f',
+  },
   'Docklands Light Railway': {
     color: '#00b2a9',
   },
-  'c2c': {
+  c2c: {
     color: '#b7007c',
   },
   bus: {
-    color: '#d42e12',
+    color: '#dc241f',
   },
   rail: {
     color: '#000000',

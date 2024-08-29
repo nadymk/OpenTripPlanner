@@ -5,6 +5,7 @@ import { formatDuration } from '../../util/formatDuration.ts';
 import { EgressSelect } from '../SearchBar/EgressSelect';
 import dayjs from 'dayjs';
 import { cn } from '../../util/cn';
+import { isTransit } from '../../util/routes';
 
 const Bar = ({ leg }) => {
   return (
@@ -18,12 +19,6 @@ const Bar = ({ leg }) => {
 };
 
 export function ItineraryLegDetails({ leg, isFirst, isLast }: { leg: Leg; isFirst: boolean; isLast: boolean }) {
-  console.log(leg);
-
-  const isTransit = () => {
-    return leg.mode === 'rail' || leg.mode === 'metro' || leg.mode === 'bus';
-  };
-
   return (
     <>
       <div className="flex flex-col">
@@ -41,12 +36,12 @@ export function ItineraryLegDetails({ leg, isFirst, isLast }: { leg: Leg; isFirs
             </div>
             <div className="grow flex flex-row relative pb-3">
               <Bar leg={leg} />
-              <span className="ml-6 w-full h-full border-bottom font-semibold text-md pb-3">{leg.fromPlace.name}</span>
+              <span className="w-[calc(100%_-_1.5rem)] ml-6 h-full border-bottom font-semibold text-md pb-3">{leg.fromPlace.name}</span>
             </div>
           </div>
         )}
 
-        {isTransit() && (
+        {isTransit(leg) && (
           <div className="flex w-full relative">
             <div className="min-w-[25%] max-w-[25%] w-[25%] text-sm">
               <div className="grow flex flex-row relative">
@@ -146,7 +141,7 @@ export function ItineraryLegDetails({ leg, isFirst, isLast }: { leg: Leg; isFirs
         </div>
       </div>
 
-      {isTransit() && (
+      {isTransit(leg) && (
         <div className="flex w-full relative">
           <div className="min-w-[25%] max-w-[25%] w-[25%] text-sm">
             <div className="grow flex flex-row relative">

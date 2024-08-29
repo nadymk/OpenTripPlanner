@@ -3,9 +3,11 @@ import { TripQueryVariables } from '../../gql/graphql.ts';
 import { ChangeEvent, useCallback, useMemo } from 'react';
 
 export function DateInputField({
+  hideLabel,
   tripQueryVariables,
   setTripQueryVariables,
 }: {
+  hideLabel?: boolean;
   tripQueryVariables: TripQueryVariables;
   setTripQueryVariables: (tripQueryVariables: TripQueryVariables) => void;
 }) {
@@ -31,9 +33,11 @@ export function DateInputField({
 
   return (
     <Form.Group>
-      <Form.Label column="sm" htmlFor="datePicker">
-        Date
-      </Form.Label>
+      {!hideLabel && (
+        <Form.Label column="sm" htmlFor="datePicker">
+          Date
+        </Form.Label>
+      )}
       <Form.Control type="date" id="datePicker" size="sm" onChange={onChange} value={current} />
     </Form.Group>
   );
