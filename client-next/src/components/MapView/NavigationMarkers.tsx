@@ -1,4 +1,4 @@
-import { TripQueryVariables } from '../../gql/graphql.ts';
+import { TripQueryVariables } from '../../gql/graphql';
 import { Marker } from 'react-map-gl';
 import markerFlagStart from '../../static/img/marker-flag-start-shadowed.png';
 import markerFlagEnd from '../../static/img/marker-flag-end-shadowed.png';

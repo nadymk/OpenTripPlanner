@@ -6,7 +6,7 @@ import { cn } from '../../util/cn';
 type InputProps = HTMLProps<HTMLInputElement>;
 
 export const Input: FC<InputProps> = ({ className, ...props }) => {
-  return <input className={cn('border rounded-md px-2 py-2 text-sm', className)} {...props} />;
+  return <input type="text" className={cn('border rounded-md px-2 py-2 text-sm', className)} {...props} />;
 };
 
 export const LocationInput: FC<Omit<InputProps, 'value'> & { value: Location }> = ({ value, ...props }) => {

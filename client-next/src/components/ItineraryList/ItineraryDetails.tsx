@@ -7,8 +7,6 @@ import { Button } from 'react-bootstrap';
 import { ItinerarySummaryBadge } from './ItinerarySummaryBadge';
 
 export function ItineraryDetails({ tripPattern }: { tripPattern: TripPattern & { legs: Leg[] } }) {
-  const to = `${tripPattern.legs?.[0]?.toPlace?.latitude},+${tripPattern.legs?.[0]?.toPlace?.longitude}`;
-  const dest = `${tripPattern.legs?.[tripPattern.legs.length - 1]?.toPlace?.latitude},+${tripPattern.legs?.[tripPattern.legs.length - 1]?.toPlace?.longitude}`;
 
   return (
     <div className="overflow-hidden pb-12">
@@ -35,15 +33,6 @@ export function ItineraryDetails({ tripPattern }: { tripPattern: TripPattern & {
             <span className="text-md font-semibold text-gray-600">({timeSince(tripPattern.duration)})</span>
           </div>
           <div className="flex flex-row space-x-2">
-            <Button
-              href={`https://www.google.com/maps/dir/${dest}/${to}`}
-              className="text-xs py-0.5 px-2"
-              onClick={() => {
-                console.log(tripPattern);
-              }}
-            >
-              Google maps
-            </Button>
             <Button
               className="text-xs py-0.5 px-2"
               onClick={() => {

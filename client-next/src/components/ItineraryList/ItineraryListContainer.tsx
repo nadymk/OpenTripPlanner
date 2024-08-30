@@ -1,4 +1,3 @@
-import * as dayjs from 'dayjs';
 import { useState } from 'react';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { QueryType, TripQueryVariables } from '../../gql/graphql';
@@ -8,38 +7,33 @@ import { DateInputField } from '../SearchBar/DateInputField';
 import { DirectModeSelect } from '../SearchBar/DirectModeSelect';
 import { EgressSelect } from '../SearchBar/EgressSelect';
 import { ItineraryFilterDebugSelect } from '../SearchBar/ItineraryFilterDebugSelect';
-import { LocationInputField } from '../SearchBar/LocationInputField';
 import { NumTripPatternsInput } from '../SearchBar/NumTripPatternsInput';
 import { SearchWindowInput } from '../SearchBar/SearchWindowInput';
 import { TimeInputField } from '../SearchBar/TimeInputField';
 import { TransitModeSelect } from '../SearchBar/TransitModeSelect';
-import { Input, LocationInput } from '../ui/Input';
+import { BackButton, GoogleMapsLinkButton } from '../ui/Button';
+import { LocationInput } from '../ui/Input';
 import { ItineraryDetails } from './ItineraryDetails';
 import { GeneralDetails } from './ItineraryLegDetails';
 import { ItinerarySummaryBadge } from './ItinerarySummaryBadge';
 import { LegTime } from './LegTime';
 import { useContainerWidth } from './useContainerWidth';
 import { useEarliestAndLatestTimes } from './useEarliestAndLatestTimes';
+import { GoogleMapsIcon } from '../icons/GoogleMapsIcon';
 
 export function ItineraryListContainer({
-  callbackRoutes,
   onRoute,
   tripQueryResult,
-  selectedTripPatternIndex,
   setSelectedTripPatternIndex,
-  pageResults,
   loading,
   tripQueryVariables,
   setTripQueryVariables,
 }: {
-  callbackRoutes: () => void;
   onRoute: () => void;
   tripQueryResult: QueryType | null;
   tripQueryVariables: TripQueryVariables;
   setTripQueryVariables: (tripQueryVariables: TripQueryVariables) => void;
-  selectedTripPatternIndex: number;
   setSelectedTripPatternIndex: (selectedTripPatterIndex: number) => void;
-  pageResults: (cursor: string) => void;
   loading: boolean;
 }) {
   const [earliestStartTime, latestEndTime] = useEarliestAndLatestTimes(tripQueryResult);
@@ -61,30 +55,42 @@ export function ItineraryListContainer({
         <section className="overflow-y-auto relative h-full" ref={containerRef}>
           <div className="flex flex-row space-x-3 py-3 px-3 border-bottom sticky top-0 bg-white z-[10]">
             <div>
-              <Button
-                className="text-xs py-0.5 px-2"
+              <BackButton
                 onClick={() => {
                   setView(undefined);
                   setSelectedTripPatternIndex(NaN);
                 }}
-              >
-                Back
-              </Button>
+              />
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm">
-                <span className="text-sm">from </span>
-                <span className="text-sm font-medium">
-                  {view.legs?.[0]?.fromPlace?.latitude}, {view.legs?.[0]?.fromPlace?.longitude}
+            <div className="flex flex-row justify-between w-full">
+              <div className="flex flex-col">
+                <span className="text-sm">
+                  <span className="text-sm">from </span>
+                  <span className="text-sm font-medium">
+                    {view.legs?.[0]?.fromPlace?.latitude}, {view.legs?.[0]?.fromPlace?.longitude}
+                  </span>
                 </span>
-              </span>
-              <span className="text-sm">
-                <span className="text-sm">to </span>
-                <span className="text-sm font-medium">
-                  {view.legs?.[view.legs.length - 1]?.toPlace?.latitude},{' '}
-                  {view.legs?.[view.legs.length - 1]?.toPlace?.longitude}
+                <span className="text-sm">
+                  <span className="text-sm">to </span>
+                  <span className="text-sm font-medium">
+                    {view.legs?.[view.legs.length - 1]?.toPlace?.latitude},{' '}
+                    {view.legs?.[view.legs.length - 1]?.toPlace?.longitude}
+                  </span>
                 </span>
-              </span>
+              </div>
+              <div className="flex">
+                <GoogleMapsLinkButton view={view} />
+                {/* <a
+                target="_blank"
+                href={`https://www.google.com/maps/dir/${dest}/${to}/&dirflg=r`}
+                className="text-xs py-0.5 px-2 hover:bg-gray-300/30"
+                onClick={() => {
+                  console.log(view);
+                }}
+              >
+                <GoogleMapsIcon />
+              </a> */}
+              </div>
             </div>
           </div>
           <ItineraryDetails tripPattern={view} />
@@ -97,14 +103,14 @@ export function ItineraryListContainer({
             <div className="sticky bg-white top-0 flex flex-row border-bottom p-3 space-x-3 shadow-sm items-center">
               <div className="flex flex-col space-y-3 grow">
                 <LocationInput
-                  className="font-medium"
+                  className="font-medium border-gray-900"
                   value={tripQueryVariables.from}
                   label="From"
                   placeholder="Click on the map to choose a starting place"
                   id="fromInputField"
                 />
                 <LocationInput
-                  className="font-medium"
+                  className="font-medium border-gray-900"
                   value={tripQueryVariables.to}
                   label="To"
                   placeholder="Choose destination"
@@ -125,22 +131,7 @@ export function ItineraryListContainer({
                   )}
                   Route
                 </Button>
-                <Button
-                  variant="outline-primary"
-                  className="h-[32px] leading-[0px]"
-                  onClick={() => callbackRoutes()}
-                  // disabled={loading}
-                >
-                  {/* {loading && (
-                    <>
-                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-                    </>
-                  )} */}
-                  Test
-                </Button>
               </div>
-              {/* <LocationInputField location={tripQueryVariables.from} label="From" id="fromInputField" />
-              <LocationInputField location={tripQueryVariables.to} label="To" id="toInputField" /> */}
             </div>
             <div className="flex flex-col border-b-[5px] p-3 space-y-3">
               <div className="flex flex-row justify-between">

@@ -53,6 +53,7 @@ const query = graphql(`
         aimedEndTime
         expectedEndTime
         expectedStartTime
+        waitingTime
         generalizedCost
         duration
         distance
@@ -67,6 +68,7 @@ const query = graphql(`
           realtime
           distance
           intermediateQuays {
+            id
             name
             latitude
             longitude
@@ -96,26 +98,13 @@ const query = graphql(`
             latitude
             longitude
           }
-          toEstimatedCall {
-            quay {
-              name
-              latitude
-              longitude
-              publicCode
-              stopPlace {
-                id
-                name
-              }
-            }
-            destinationDisplay {
-              frontText
-            }
-          }
           line {
+            id
             publicCode
             name
           }
           authority {
+            id
             name
           }
           pointsOnLink {

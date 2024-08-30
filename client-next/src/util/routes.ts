@@ -28,7 +28,7 @@ export const isTransit = (leg?: Leg) => {
   }
 
   return (
-    isMode(leg, 'rail') || isMode(leg, 'tram') || isMode(leg, 'water') || leg.mode === 'metro' || leg.mode === 'bus'
+    isMode(leg, 'rail') || isMode(leg, 'tram') || isMode(leg, 'water') || isMode(leg, 'metro') || isMode(leg, 'bus')
   );
 };
 
@@ -85,6 +85,9 @@ const riverBusColors = {
   RB6: {
     color: '#df64b0',
   },
+  "Woolwich Ferry": {
+    color: '#00a3e0',
+  }
 };
 
 export const operatorColors = {
@@ -113,6 +116,27 @@ export const operatorColors = {
   },
   'Great Northern': {
     color: '#30104d',
+  },
+  'Chiltern Railways': {
+    color: '#00bfff',
+  },
+  'Great Western Railway': {
+    color: '#0a493e',
+  },
+  'Avanti West Coast': {
+    color: '#004354',
+  },
+  'West Midlands Trains': {
+    color: '#ff8300',
+  },
+  'East Midlands Railway': {
+    color: '#713563',
+  },
+  'Gatwick Express': {
+    color: '#EB1E2D',
+  },
+  'Heathrow Express': {
+    color: '#532e63',
   },
   'TfL Rail': {
     color: '#6950a1',
@@ -144,6 +168,10 @@ export const operatorColors = {
 };
 
 export const getOperatorColor = (leg: Leg): { color: string; text?: string } => {
+  if (operatorColors[leg?.publicCode]) {
+    return operatorColors[leg?.publicCode];
+  }
+
   if (operatorColors[leg.line?.publicCode]) {
     return operatorColors[leg.line?.publicCode];
   }
