@@ -1,6 +1,6 @@
+import request from 'graphql-request';
 import { useCallback, useEffect, useState } from 'react';
 import { graphql } from '../gql';
-import request from 'graphql-request';
 import { QueryType, TripQueryVariables } from '../gql/graphql';
 
 const endpoint = import.meta.env.VITE_API_URL;
@@ -10,35 +10,24 @@ const endpoint = import.meta.env.VITE_API_URL;
   TODO: should live in a separate file, and split into fragments for readability
  */
 const query = graphql(`
-  query lines {
-    lines {
+  query serviceJourney {
+    serviceJourney(id: "NR:186706") {
       id
-      name
-      transportMode
       publicCode
-      authority {
-        id
-        name
+      privateCode
+      passingTimes {
+        quay {
+          name
+          latitude
+          longitude
+        }
+        arrival {
+          time
+        }
       }
     }
   }
 `);
-
-// const query = graphql(`
-//     query routes() {
-//       shortName
-//       longName
-//       patterns {
-//         name
-//         id
-//         stops {
-//           name
-//           lat
-//           lon
-//         }
-//       }
-//     }
-// `);
 
 type TripQueryHook = (variables?: TripQueryVariables) => {
   data: QueryType | null;
@@ -46,7 +35,7 @@ type TripQueryHook = (variables?: TripQueryVariables) => {
   refetch: (pageCursor?: string) => Promise<void>;
 };
 
-export const useRoutesQuery: TripQueryHook = () => {
+export const useServiceJourney: TripQueryHook = () => {
   const [data, setData] = useState<QueryType | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -61,13 +50,10 @@ export const useRoutesQuery: TripQueryHook = () => {
     }
   }, [setData, loading]);
 
-  // useEffect(() => {
-  //   // if (variables?.from.coordinates && variables?.to.coordinates) {
-  //   callback();
-  //   console.log('calling routes');
-  //   // }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+    callback();
+  }, []);
+
   console.log(data);
 
   return { data, isLoading: loading, refetch: callback };

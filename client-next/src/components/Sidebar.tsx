@@ -7,11 +7,11 @@ import logo from '../static/img/otp-logo.svg';
 export const Sidebar: FC<{
   tab: string;
   onTabChange: (tab: string) => void;
-}> = ({ tab, onTabChange }) => {
+}> = ({ lineCount, tripCount, tab, onTabChange }) => {
   return (
     <div className="min-w-[80px] bg-white z-[20] border-r shadow-md">
       <div className="flex flex-col space-y-0">
-        <div className="border-b flex flex-col px-3 py-3 items-center justify-center">
+        <div className="border-b h-[56px] flex flex-col px-3 py-3 items-center justify-center">
           <img alt="" src={logo} width="30" height="30" className="d-inline-block align-top" />
         </div>
 
@@ -19,6 +19,15 @@ export const Sidebar: FC<{
           active={tab}
           value="plan"
           onTabChange={onTabChange}
+          tag={
+            <>
+              {tripCount > 0 && (
+                <div className="absolute bg-gray-500 rounded-lg px-1.5 py-0.5 flex -top-[6px] -right-[6px]">
+                  <span className="text-white text-[9px] font-medium">{tripCount}</span>
+                </div>
+              )}
+            </>
+          }
           icon={
             <RailIcon
               className={cn('h-[22px] w-[22px]', {
@@ -34,6 +43,15 @@ export const Sidebar: FC<{
           active={tab}
           value="lines"
           onTabChange={onTabChange}
+          tag={
+            <>
+              {lineCount > 0 && (
+                <div className="absolute bg-gray-500 rounded-lg px-1.5 py-0.5 flex -top-[8px] -right-[8px]">
+                  <span className="text-white text-[9px] font-medium">{lineCount}</span>
+                </div>
+              )}
+            </>
+          }
           icon={
             <GearIcon
               className={cn('h-[22px] w-[22px]', {
@@ -67,11 +85,12 @@ export const Sidebar: FC<{
 
 const SidebarButton: FC<{
   icon?: ReactNode;
+  tag?: ReactNode;
   active: string;
   value: string;
   onTabChange: (tab: string) => void;
   children: ReactNode;
-}> = ({ icon, active, value, onTabChange, children }) => {
+}> = ({ icon, tag, active, value, onTabChange, children }) => {
   const isActive = active === value;
   return (
     <button
@@ -79,16 +98,17 @@ const SidebarButton: FC<{
       onClick={() => onTabChange(value)}
     >
       <div
-        className={cn('flex justify-center items-center h-[38px] w-[38px] rounded-lg', {
-          'bg-blue-500': isActive,
+        className={cn('flex relative justify-center items-center h-[38px] w-[38px] rounded-lg', {
+          'bg-gray-700': isActive,
           'bg-gray-100': !isActive,
         })}
       >
+        {tag && tag}
         {icon && icon}
       </div>
       <span
         className={cn('font-medium text-xs', {
-          'text-blue-500': isActive,
+          'text-gray-700': isActive,
           'text-gray-500': !isActive,
         })}
       >

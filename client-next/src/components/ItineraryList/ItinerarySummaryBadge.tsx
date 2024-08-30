@@ -1,6 +1,6 @@
 import chevronRight from '../../static/img/chevron-right.svg';
 import { LegIcon } from '../icons/TransitIcons';
-import { LineBadge } from './ItineraryLegDetails';
+import { LineBadge } from '../ui/LineDetail';
 
 export const ItinerarySummaryBadge = ({ legs }) => {
   return (
