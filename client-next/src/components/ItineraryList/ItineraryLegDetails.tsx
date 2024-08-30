@@ -1,15 +1,13 @@
 import dayjs from 'dayjs';
-import { FC, HTMLProps, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { Leg } from '../../gql/graphql';
-import walkBarBackground from '../../static/img/leg-bullet-1x.png';
 import { cn } from '../../util/cn';
 import { formatDistance } from '../../util/formatDistance';
-import {
-  getOperatorColor, isBus, isMode, isTransit
-} from '../../util/routes';
+import { getOperatorColor, isBus, isTransit } from '../../util/routes';
 import { secondsToHms } from '../../util/time';
 import { LegIcon } from '../icons/TransitIcons';
 import { Badge } from '../ui/Badge';
+import { Bar, InterChangeDot, LegDetailLeftContainer, LineBadge } from '../ui/LineDetail';
 import { LegTime } from './LegTime';
 
 export const ItineraryLegDetails: FC<{
@@ -21,7 +19,6 @@ export const ItineraryLegDetails: FC<{
 }> = ({ leg, isFirst, isLast, previousLeg, nextLeg }) => {
   const isLegStartSameAsLegEnd = () => {
     return dayjs(previousLeg?.expectedEndTime).isSame(dayjs(leg.expectedStartTime));
-    // return true;
   };
 
   return (
@@ -182,6 +179,7 @@ export const GeneralDetails: FC<{
   return (
     <div className={cn('flex flex-wrap mt-3 gap-2', className)}>
       <Badge>GC {leg.generalizedCost}</Badge>
+      {leg.id && <Badge>{leg?.line.id}</Badge>}
       <Badge>{formatDistance(leg.distance)}</Badge>
       <Badge>{dayjs.duration(leg.duration, 'seconds').format('HH:mm:ss')}</Badge>
       <Badge>{leg.duration + ' s'}</Badge>
@@ -194,76 +192,6 @@ export const GeneralDetails: FC<{
         </Badge>
       )}
       {/* {leg.authority?.name && <Badge>{leg.authority?.name}</Badge>} */}
-    </div>
-  );
-};
-
-export const LineBadge: FC<{
-  className?: string;
-  leg: Leg;
-}> = ({ leg, className }) => {
-  const { text, color } = getOperatorColor(leg);
-
-  const value = useMemo(() => {
-    if (leg.line?.publicCode || isBus(leg)) {
-      return leg.line?.publicCode;
-    }
-
-    return leg.authority?.name;
-  }, [leg]);
-
-  if (!value) {
-    return null;
-  }
-
-  return (
-    <span
-      style={{
-        backgroundColor: color,
-        color: text ? text : 'white',
-      }}
-      className={cn('font-semibold text-xs bg-red-600 rounded-sm px-1', className)}
-    >
-      {value}
-    </span>
-  );
-};
-
-const Bar: FC<{
-  className?: string;
-  leg: Leg;
-}> = ({ leg, className }) => {
-  const { text, color } = getOperatorColor(leg);
-  return (
-    <div
-      style={{
-        backgroundColor: isMode(leg, 'foot') ? 'transparent' : color,
-        backgroundImage: isMode(leg, 'foot') ? `url(${walkBarBackground})` : undefined,
-        color: text ? text + ' !important' : undefined,
-      }}
-      className={cn('absolute top-0 bottom-0 min-w-[6px] max-w-[6px] w-[6px] bg-green-500 mr-2', className)}
-    />
-  );
-};
-
-const InterChangeDot: FC<HTMLProps<HTMLDivElement>> = ({ className, ...props }) => {
-  return (
-    <div
-      {...props}
-      className={cn(
-        'w-[12px] h-[12px] bg-white absolute z-1 top-[7px] -left-[3px] rounded-full border-black border-[2px]',
-        className,
-      )}
-    />
-  );
-};
-
-const LegDetailLeftContainer: FC<HTMLProps<HTMLDivElement>> = ({ children, className, ...props }) => {
-  return (
-    <div className={cn('relative min-w-[20%] max-w-[20%] w-[20%] text-sm')}>
-      <div {...props} className={cn('grow flex flex-row relative font-semibold justify-end mr-4', className)}>
-        {children}
-      </div>
     </div>
   );
 };

@@ -44,7 +44,10 @@ export function App() {
         {/* <div className="absolute h-full"> */}
 
         <div className="max-w-[530px] min-w-[530px] flex flex-row h-screen z-[10] bg-white radius-lg overflow-hidden border shadow-lg">
-          <Sidebar tab={tab} onTabChange={setTab} />
+          <Sidebar tab={tab} onTabChange={setTab} 
+          lineCount={routesQueryResult?.lines?.length ?? 0} 
+          tripCount={tripQueryResult?.trip.tripPatterns?.length ?? 0} 
+          />
           <div className="min-w-[450px] h-screen z-[10] bg-white">
             {tab === 'lines' && (
               <LineTab

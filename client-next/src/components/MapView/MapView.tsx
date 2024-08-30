@@ -44,6 +44,8 @@ export function MapView({
     },
   ) => {
     if (e.features) {
+      console.log(e)
+      console.log(e.features)
       // if you click on a cluster of map features it's possible that there are multiple
       // to select from. we are using the first one instead of presenting a selection UI.
       // you can always zoom in closer if you want to make a more specific click.
@@ -86,7 +88,7 @@ export function MapView({
         dragRotate={false}
         onLoad={panToWorldEnvelopeIfRequired}
       >
-        <NavigationControl position="top-left" />
+        <NavigationControl position="bottom-right" />
         <NavigationMarkers
           tripQueryVariables={tripQueryVariables}
           setTripQueryVariables={setTripQueryVariables}
@@ -107,6 +109,7 @@ export function MapView({
             onClose={() => setShowContextPopup(null)}
           />
         )}
+        {console.log(showPropsPopup)}
         {showPropsPopup?.feature?.properties && (
           <GeometryPropertyPopup
             coordinates={showPropsPopup?.coordinates}
