@@ -28,7 +28,7 @@
     }
   ],
   "emissions": {
-    "avgOccupancy": 40,
+    "avgOccupancy": 0,
     "carAvgCo2PerKm": 170,
     "carAvgOccupancy": 1.2
   }

@@ -39,7 +39,7 @@ public class EmissionsConfig {
         .of("avgOccupancy")
         .since(V2_5)
         .summary("The average crowd level")
-        .asInt(40);
+        .asInt(0);
 
     this.carAvgOccupancy =
       c

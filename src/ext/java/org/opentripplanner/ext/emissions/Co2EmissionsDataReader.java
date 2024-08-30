@@ -87,7 +87,7 @@ public class Co2EmissionsDataReader {
 
     while (reader.readRecord()) {
       String stopId = reader.get("stop_id");
-      String occupancy = reader.get("occupancy");
+      String occupancy = reader.get("crowdedness");
 
       if (!StringUtils.hasValue(stopId)) {
         issueStore.add(
