@@ -180,6 +180,10 @@ export const getOperatorColor = (leg: Leg): { color: string; text?: string } => 
     return operatorColors[leg.authority?.name];
   }
 
+  if (operatorColors[leg.line?.authority?.name]) {
+    return operatorColors[leg.line?.authority?.name];
+  }
+
   if (isBus(leg)) {
     return operatorColors['bus'];
   }

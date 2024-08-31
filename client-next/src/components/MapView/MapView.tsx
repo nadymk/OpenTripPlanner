@@ -22,13 +22,14 @@ const styleUrl = import.meta.env.VITE_DEBUG_STYLE_URL;
 type PopupData = { coordinates: LngLat; feature: MapGeoJSONFeature };
 
 export function MapView({
-  selectedLine,
+  lines,
   tripQueryVariables,
   setTripQueryVariables,
   tripQueryResult,
   selectedTripPatternIndex,
   loading,
 }: {
+  lines: any[];
   tripQueryVariables: TripQueryVariables;
   setTripQueryVariables: (variables: TripQueryVariables) => void;
   tripQueryResult: TripQuery | null;
@@ -44,8 +45,8 @@ export function MapView({
     },
   ) => {
     if (e.features) {
-      console.log(e)
-      console.log(e.features)
+      console.log(e);
+      console.log(e.features);
       // if you click on a cluster of map features it's possible that there are multiple
       // to select from. we are using the first one instead of presenting a selection UI.
       // you can always zoom in closer if you want to make a more specific click.
@@ -67,7 +68,7 @@ export function MapView({
 
   return (
     <div className="map-container h-screen">
-    {/* <div className="map-container below-content"> */}
+      {/* <div className="map-container below-content"> */}
       <Map
         // @ts-ignore
         mapLib={import('maplibre-gl')}
@@ -98,9 +99,8 @@ export function MapView({
         {tripQueryResult?.trip.tripPatterns.length && (
           <LegLines tripPattern={tripQueryResult.trip.tripPatterns[selectedTripPatternIndex] as TripPattern} />
         )}
-        {selectedLine && (
-          <LegLines2 selectedLine={selectedLine} />
-        )}
+        {tripQueryResult?.trip.tripPatterns.map((trip) => <LegLines tripPattern={trip} />)}
+        {lines && lines.map((line) => <LegLines2 key={line.id} selectedLine={line} />)}
         {showContextPopup && (
           <ContextMenuPopup
             tripQueryVariables={tripQueryVariables}
@@ -109,7 +109,6 @@ export function MapView({
             onClose={() => setShowContextPopup(null)}
           />
         )}
-        {console.log(showPropsPopup)}
         {showPropsPopup?.feature?.properties && (
           <GeometryPropertyPopup
             coordinates={showPropsPopup?.coordinates}

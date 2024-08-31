@@ -1,36 +1,33 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { Line } from '../../gql/graphql';
-import { useLineQuery } from '../../hooks/useLineQuery';
+import { JourneyPattern, Line, Maybe } from '../../gql/graphql';
 import { LegIcon } from '../icons/TransitIcons';
 import { Badge } from '../ui/Badge';
 import { BackButton } from '../ui/Button';
 import { LineBadge } from '../ui/LineDetail';
-import { LineDetails } from './LineBarDisplay';
+import { useQuayQuery } from './use-quay-query';
 
-export const LineDetailTab: FC<{
+export const StopsDetailTab: FC<{
   value?: string;
   onClose: () => void;
-  onLineLoaded: (line: Line) => void;
-  onLineRemoved: (line: Line) => void;
+  onLineLoaded: (line: Maybe<JourneyPattern>) => void;
+  onLineRemoved: (line: Maybe<JourneyPattern>) => void;
 }> = ({ value, onClose, onLineLoaded, onLineRemoved }) => {
-  const { data, isLoading, refetch } = useLineQuery(value);
-  const [routesOpen, setRoutesOpen] = useState(false);
-
-  console.log(data);
+  const { data, isLoading, refetch } = useQuayQuery(value);
 
   useEffect(() => {
     if (!data) {
       return;
     }
 
-    onLineLoaded(data);
-    return () => onLineRemoved(data);
+    data?.journeyPatterns?.forEach(onLineLoaded);
+    
+    return () => {
+      data.journeyPatterns.forEach(onLineRemoved);
+    };
   }, [data]);
 
   const close = () => {
-    console.log(value);
-    // onLineRemoved(data);
     onClose();
   };
 
@@ -43,10 +40,11 @@ export const LineDetailTab: FC<{
             {data && (
               <div className="flex flex-col gap-2 w-full">
                 <span className="text-base font-medium">{data?.name}</span>
-                <span className="gap-1.5 flex flex-row items-center">
-                  <LegIcon leg={data} />
-                  <LineBadge className="text-nowrap" leg={data} />
-                </span>
+                {/* <span className="gap-1.5 text-sm flex flex-row items-center"> */}
+                {/* {data.id} */}
+                {/* <LegIcon leg={data} /> */}
+                {/* <LineBadge className="text-nowrap" leg={data} /> */}
+                {/* </span> */}
               </div>
             )}
           </div>
@@ -67,18 +65,21 @@ export const LineDetailTab: FC<{
           </div>
           <div className="flex flex-col">
             <div className="border-b p-3">
-              <span className="text-sm font-medium">Routes {data.serviceJourneys?.length}</span>
+              <span className="text-sm font-medium">Routes {data.journeyPatterns.length}</span>
             </div>
-            {routesOpen &&
-              data.serviceJourneys?.map((pattern) => {
-                return (
-                  <div className="p-3">
-                    <span>{pattern.id}</span>
-                  </div>
-                );
-              })}
+            {data?.journeyPatterns?.map((pattern) => {
+              return (
+                <div className="p-3">
+                  <span className="flex gap-1.5 flex-wrap flex-row">
+                    <LegIcon leg={pattern.line} />
+                    <LineBadge className="text-nowrap" leg={pattern.line} />
+
+                    <span className="flex text-sm">{pattern.name}</span>
+                  </span>
+                </div>
+              );
+            })}
           </div>
-          <LineDetails trip={data} />
         </div>
       )}
     </>

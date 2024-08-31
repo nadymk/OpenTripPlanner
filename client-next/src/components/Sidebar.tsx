@@ -1,8 +1,9 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useContext } from 'react';
 import { cn } from '../util/cn';
 import { GearIcon } from './icons/GearIcon';
 import { RailIcon } from './icons/TrainIcon';
 import logo from '../static/img/otp-logo.svg';
+import { BadgeCellContext, TabValue } from './ui/Tabs';
 
 export const Sidebar: FC<{
   tab: string;
@@ -11,7 +12,7 @@ export const Sidebar: FC<{
   return (
     <div className="min-w-[80px] bg-white z-[20] border-r shadow-md">
       <div className="flex flex-col space-y-0">
-        <div className="border-b h-[56px] flex flex-col px-3 py-3 items-center justify-center">
+        <div className="border-b h-[65px] flex flex-col px-3 py-3 items-center justify-center">
           <img alt="" src={logo} width="30" height="30" className="d-inline-block align-top" />
         </div>
 
@@ -65,6 +66,30 @@ export const Sidebar: FC<{
         </SidebarButton>
         <SidebarButton
           active={tab}
+          value="stops"
+          onTabChange={onTabChange}
+          tag={
+            <>
+              {lineCount > 0 && (
+                <div className="absolute bg-gray-500 rounded-lg px-1.5 py-0.5 flex -top-[8px] -right-[8px]">
+                  <span className="text-white text-[9px] font-medium">{lineCount}</span>
+                </div>
+              )}
+            </>
+          }
+          icon={
+            <GearIcon
+              className={cn('h-[22px] w-[22px]', {
+                'fill-gray-400': tab !== 'stops',
+                'fill-white': tab == 'stops',
+              })}
+            />
+          }
+        >
+          Stops
+        </SidebarButton>
+        <SidebarButton
+          active={tab}
           value="config"
           onTabChange={onTabChange}
           icon={
@@ -83,7 +108,7 @@ export const Sidebar: FC<{
   );
 };
 
-const SidebarButton: FC<{
+export const SidebarButton: FC<{
   icon?: ReactNode;
   tag?: ReactNode;
   active: string;
@@ -115,5 +140,37 @@ const SidebarButton: FC<{
         {children}
       </span>
     </button>
+  );
+};
+
+export const SidebarTabValue: FC<{
+  icon?: ReactNode;
+  tag?: ReactNode;
+  value: string;
+  children: ReactNode;
+}> = ({ icon, tag, value, children }) => {
+  const { isActive: check } = useContext(BadgeCellContext);
+
+  const isActive = check(value);
+  return (
+    <TabValue className="flex flex-col space-y-2 px-3 py-3 items-center justify-center">
+      <div
+        className={cn('flex relative justify-center items-center h-[38px] w-[38px] rounded-lg', {
+          'bg-gray-700': isActive,
+          'bg-gray-100': !isActive,
+        })}
+      >
+        {tag && tag}
+        {icon && icon}
+      </div>
+      <span
+        className={cn('font-medium text-xs', {
+          'text-gray-700': isActive,
+          'text-gray-500': !isActive,
+        })}
+      >
+        {children}
+      </span>
+    </TabValue>
   );
 };

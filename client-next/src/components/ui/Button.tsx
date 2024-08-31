@@ -33,11 +33,20 @@ export const GoogleMapsLinkButton = ({ view }) => {
       target="_blank"
       href={`https://www.google.com/maps/dir/${dest}/${to}/&dirflg=r`}
       className="flex border rounded-full h-[32px] w-[32px] text-xs hover:bg-gray-300/30 items-center justify-center"
-      onClick={() => {
-        console.log(view);
-      }}
     >
       <GoogleMapsIcon />
     </a>
+  );
+};
+
+export const LinkButton: FC<BaseButtonProps> = ({ className, ...props }) => {
+  return (
+    <a
+      className={cn(
+        'flex border rounded-full h-[32px] w-[32px] text-xs hover:bg-gray-300/30 items-center justify-center',
+        className,
+      )}
+      {...props}
+    />
   );
 };

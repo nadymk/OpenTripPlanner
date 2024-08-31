@@ -6,7 +6,6 @@ import { EgressSelect } from '../SearchBar/EgressSelect';
 import dayjs from 'dayjs';
 
 export function ItineraryLegDetailsTrain({ leg, isFirst, isLast }: { leg: Leg; isFirst: boolean; isLast: boolean }) {
-  console.log(leg);
 
   return (
     <>

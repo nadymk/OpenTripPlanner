@@ -1,14 +1,14 @@
+import { useState } from 'react';
 import { Stack } from 'react-bootstrap';
+import { ItineraryListContainer } from '../components/ItineraryList/ItineraryListContainer';
+import { LineTab } from '../components/lines/LineTab';
 import { MapView } from '../components/MapView/MapView';
 import { SearchBar } from '../components/SearchBar/SearchBar';
-import { ItineraryListContainer } from '../components/ItineraryList/ItineraryListContainer';
-import { useEffect, useState } from 'react';
-import { Line, TripQueryVariables } from '../gql/graphql';
-import { useTripQuery } from '../hooks/useTripQuery';
-import { useServerInfo } from '../hooks/useServerInfo';
-import { useRoutesQuery } from '../hooks/useRoutesQuery';
 import { Sidebar } from '../components/Sidebar';
-import { LineTab } from '../components/lines/LineTab';
+import { StopsTab } from '../components/stops/StopsTab';
+import { Line, TripQueryVariables } from '../gql/graphql';
+import { useServerInfo } from '../hooks/useServerInfo';
+import { useTripQuery } from '../hooks/useTripQuery';
 
 const INITIAL_VARIABLES: TripQueryVariables = {
   from: {},
@@ -17,50 +17,48 @@ const INITIAL_VARIABLES: TripQueryVariables = {
 };
 
 export function App() {
-  const { data: routesQueryResult, isLoading: loadingRoutes, refetch: callbackRoutes } = useRoutesQuery();
   const [tripQueryVariables, setTripQueryVariables] = useState<TripQueryVariables>(INITIAL_VARIABLES);
   const [tripQueryResult, loading, callback] = useTripQuery(tripQueryVariables);
   const serverInfo = useServerInfo();
   const [selectedTripPatternIndex, setSelectedTripPatternIndex] = useState<number>(0);
   const [tab, setTab] = useState('plan');
-  const [selectedLine, setSelectedLine] = useState<Line>();
+  const [selectedLine, setSelectedLine] = useState<Line[]>([]);
 
-  // useEffect(() => {
-  //   callbackRoutes();
-  // }, []);
-  console.log(routesQueryResult);
+  const addLine = (line: any) => {
+    setSelectedLine((prev) => [...prev, line]);
+  };
+
+  const onRemoveLine = (line: any) => {
+    setSelectedLine((prev) => prev.filter((value) => value?.id !== line?.id));
+  };
+
+  const onTabChange = (tab: string) => {
+    setSelectedLine([]);
+    setTab(tab);
+  };
 
   return (
     <div className="app">
-      {/* <SearchBar
-        onRoute={callback}
-        tripQueryVariables={tripQueryVariables}
-        setTripQueryVariables={setTripQueryVariables}
-        serverInfo={serverInfo}
-        loading={loading}
-      /> */}
-
       <Stack direction="horizontal" gap={0} className="relative">
-        {/* <div className="absolute h-full"> */}
-
-        <div className="max-w-[530px] min-w-[530px] flex flex-row h-screen z-[10] bg-white radius-lg overflow-hidden border shadow-lg">
-          <Sidebar tab={tab} onTabChange={setTab} 
-          lineCount={routesQueryResult?.lines?.length ?? 0} 
-          tripCount={tripQueryResult?.trip.tripPatterns?.length ?? 0} 
+        <div className="max-w-[550px] min-w-[550px] flex flex-row h-screen z-[10] bg-white radius-lg overflow-hidden border shadow-lg">
+          <Sidebar
+            tab={tab}
+            onTabChange={onTabChange}
+            // lineCount={routesQueryResult?.lines?.length ?? 0}
+            tripCount={tripQueryResult?.trip.tripPatterns?.length ?? 0}
           />
-          <div className="min-w-[450px] h-screen z-[10] bg-white">
-            {tab === 'lines' && (
-              <LineTab
-                data={routesQueryResult}
-                isLoading={loadingRoutes}
-                onRefresh={callbackRoutes}
-                selectedLine={selectedLine}
-                onLineSelected={setSelectedLine}
+
+          <div className="min-w-[470px] h-screen z-[10] bg-white">
+            {tab === 'stops' && (
+              <StopsTab
+                // selectedLine={selectedLine}
+                onLineRemoved={onRemoveLine}
+                onLineSelected={addLine}
               />
             )}
+            {tab === 'lines' && <LineTab onLineSelected={addLine} onLineRemoved={onRemoveLine} />}
             {tab === 'plan' && (
               <ItineraryListContainer
-                callbackRoutes={callbackRoutes}
                 onRoute={callback}
                 tripQueryResult={tripQueryResult}
                 tripQueryVariables={tripQueryVariables}
@@ -83,7 +81,7 @@ export function App() {
           </div>
         </div>
         <MapView
-          selectedLine={selectedLine}
+          lines={selectedLine}
           tripQueryResult={tripQueryResult}
           tripQueryVariables={tripQueryVariables}
           setTripQueryVariables={setTripQueryVariables}

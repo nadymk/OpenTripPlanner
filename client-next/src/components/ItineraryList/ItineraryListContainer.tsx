@@ -122,7 +122,7 @@ export function ItineraryListContainer({
                   variant="outline-primary"
                   className="h-[32px] leading-[0px]"
                   onClick={() => onRoute()}
-                  disabled={loading}
+                  // disabled={loading}
                 >
                   {loading && (
                     <>

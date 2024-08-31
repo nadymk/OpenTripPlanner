@@ -27,7 +27,6 @@ export function LegLines({ tripPattern }: { tripPattern?: TripPattern }) {
                   },
                 }}
               >
-                {console.log(leg)}
                 <Layer
                   type="line"
                   layout={{
@@ -104,18 +103,19 @@ export function LegLines({ tripPattern }: { tripPattern?: TripPattern }) {
 }
 
 export function LegLines2({ selectedLine }: { selectedLine: Line }) {
-  // const coords = decode(leg.pointsOnLink.points as string, 5).map((value) => value.reverse());
-  const coords = selectedLine.quays
-    .map((quay) => {
+  const coords = selectedLine?.quays
+    ?.map((quay) => {
       return [quay.latitude, quay.longitude];
     })
-    .map((value) => value.reverse());
+    ?.map((value) => value.reverse());
 
-  console.log(encode(coords));
+  if (!coords) {
+    return null;
+  }
 
   const first = coords[0];
   const last = coords[coords.length - 1];
-  const leg = selectedLine
+  const leg = selectedLine;
 
   return (
     <>

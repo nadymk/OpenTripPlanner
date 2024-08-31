@@ -1,10 +1,7 @@
-import * as dayjs from 'dayjs';
-import { FC, useRef } from 'react';
-import { Leg, Trip } from '../../gql/graphql';
+import { FC } from 'react';
+import { Trip } from '../../gql/graphql';
 import { cn } from '../../util/cn';
 import { getOperatorColor } from '../../util/routes';
-import { LegIcon } from '../icons/TransitIcons';
-import { Badge } from '../ui/Badge';
 import { Bar, InterChangeDot, LegDetailLeftContainer, LineDetailStop } from '../ui/LineDetail';
 
 export const LineDetails: FC<{
@@ -12,7 +9,6 @@ export const LineDetails: FC<{
 }> = ({ trip: selectedLine }) => {
   const first = selectedLine.quays[0];
   const last = selectedLine.quays[selectedLine.quays.length - 1];
-  console.log(selectedLine);
 
   return (
     <div className="flex flex-col py-6">
@@ -27,15 +23,11 @@ export const LineDetails: FC<{
       {selectedLine?.quays?.map((leg, index) => {
         const isFirst = index === 0;
         const isLast = selectedLine.quays.length - 1 === index;
-
         return (
           <>
             {!isFirst && !isLast && (
               <div className="flex w-full">
-                <LegDetailLeftContainer className="text-sm flex flex-col space-y-1 relative items-end mr-6 grow-0">
-                  <LegIcon leg={leg} />
-                </LegDetailLeftContainer>
-
+                <LegDetailLeftContainer className="text-sm flex flex-col space-y-1 relative items-end mr-6 grow-0 items-bottom" />
                 <div
                   className={cn('grow h-full flex flex-row relative mt-2', {
                     'pt-[26px] mt-0': index === 1,
