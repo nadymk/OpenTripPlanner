@@ -40,7 +40,6 @@ export const useServiceJourney: TripQueryHook = () => {
   const [loading, setLoading] = useState(false);
 
   const callback = useCallback(async () => {
-    console.log('Should be loading');
     if (loading) {
       console.warn('Wait for previous search to finish');
     } else {
@@ -53,8 +52,6 @@ export const useServiceJourney: TripQueryHook = () => {
   useEffect(() => {
     callback();
   }, []);
-
-  console.log(data);
 
   return { data, isLoading: loading, refetch: callback };
 };

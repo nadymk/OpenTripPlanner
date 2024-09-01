@@ -1,49 +1,39 @@
-import { TripQueryVariables } from '../../gql/graphql';
 import { Marker } from 'react-map-gl';
-import markerFlagStart from '../../static/img/marker-flag-start-shadowed.png';
 import markerFlagEnd from '../../static/img/marker-flag-end-shadowed.png';
+import markerFlagStart from '../../static/img/marker-flag-start-shadowed.png';
+import { useCoordinateStore } from '../../util/store';
+import { coordsToString, parseCoords } from '../../util/location';
 
-export function NavigationMarkers({
-  tripQueryVariables,
-  setTripQueryVariables,
-  loading,
-}: {
-  tripQueryVariables: TripQueryVariables;
-  setTripQueryVariables: (variables: TripQueryVariables) => void;
-  loading: boolean;
-}) {
+export function NavigationMarkers({}: {}) {
+  const toCoords = useCoordinateStore((state) => state.toCoords);
+  const fromCoords = useCoordinateStore((state) => state.fromCoords);
+  const setTo = useCoordinateStore((state) => state.setTo);
+  const setFrom = useCoordinateStore((state) => state.setFrom);
+
   return (
     <>
-      {tripQueryVariables.from.coordinates && (
+      {fromCoords && (
         <Marker
           draggable
-          latitude={tripQueryVariables.from.coordinates?.latitude}
-          longitude={tripQueryVariables.from.coordinates?.longitude}
+          latitude={fromCoords?.latitude}
+          longitude={fromCoords?.longitude}
           onDragEnd={(e) => {
-            if (!loading) {
-              setTripQueryVariables({
-                ...tripQueryVariables,
-                from: { coordinates: { latitude: e.lngLat.lat, longitude: e.lngLat.lng } },
-              });
-            }
+            const value = coordsToString(parseCoords(`${e.lngLat.lat} ${e.lngLat.lng}`));
+            setFrom(value);
           }}
           anchor="bottom-right"
         >
           <img alt="" src={markerFlagStart} height={48} width={49} />
         </Marker>
       )}
-      {tripQueryVariables.to.coordinates && (
+      {toCoords && (
         <Marker
           draggable
-          latitude={tripQueryVariables.to.coordinates?.latitude}
-          longitude={tripQueryVariables.to.coordinates?.longitude}
+          latitude={toCoords?.latitude}
+          longitude={toCoords?.longitude}
           onDragEnd={(e) => {
-            if (!loading) {
-              setTripQueryVariables({
-                ...tripQueryVariables,
-                to: { coordinates: { latitude: e.lngLat.lat, longitude: e.lngLat.lng } },
-              });
-            }
+            const value = coordsToString(parseCoords(`${e.lngLat.lat} ${e.lngLat.lng}`));
+            setTo(value);
           }}
           anchor="bottom-right"
         >

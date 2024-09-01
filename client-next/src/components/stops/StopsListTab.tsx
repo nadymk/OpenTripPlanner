@@ -3,20 +3,19 @@ import { FC, useMemo, useRef, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { IoMdRefresh } from 'react-icons/io';
 import { useDebounce } from 'use-debounce';
-import { useRoutesQuery } from '../../hooks/useRoutesQuery';
-import { LegIcon } from '../icons/TransitIcons';
 import { RoundButton } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { LineBadge } from '../ui/LineDetail';
+import { StopsListItem } from './StopsListItem';
+import { useQuaysQuery } from './use-quays-query';
 
-export const LineListTab: FC<{
-  onLineSelected: (id: string) => void;
-}> = ({ onLineSelected }) => {
-  const { data, isLoading, refetch: onRefresh } = useRoutesQuery();
-
+export const StopsListTab: FC<{
+  onStopSelected: (id: string) => void;
+}> = ({ onStopSelected }) => {
   const parentRef = useRef();
   const [search, setSearch] = useState<string>();
   const [searchDebounced] = useDebounce(search, 500);
+
+  const { data, isLoading, refetch } = useQuaysQuery();
 
   const filtered = useMemo(() => {
     if (!searchDebounced || searchDebounced.length === 0) {
@@ -42,8 +41,8 @@ export const LineListTab: FC<{
       <div className="sticky top-0 bg-white z-[10] flex flex-row border-bottom space-x-3 shadow-sm items-center">
         <div className="flex flex-col h-full w-full">
           <div className="flex flex-row items-center justify-between w-full border-b p-3 shadow-sm">
-            <span className="font-medium text-base">Lines</span>
-            <RoundButton className="border" onClick={() => onRefresh()}>
+            <span className="font-medium text-base">Stops</span>
+            <RoundButton className="border" onClick={() => refetch()}>
               <IoMdRefresh className="h-[16px] w-[15px]" />
             </RoundButton>
           </div>
@@ -74,31 +73,18 @@ export const LineListTab: FC<{
             }}
           >
             {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-              const line = filtered?.[virtualItem.index];
+              const stop = filtered?.[virtualItem.index];
 
               return (
-                <div
+                <StopsListItem
                   key={virtualItem.key}
-                  className="flex py-3 absolute top-0 left-0 flex-row items-center h-full w-full border-b py-3 px-3 hover:bg-gray-100 hover:cursor-pointer space-x-2"
+                  stop={stop}
                   style={{
                     height: `${virtualItem.size}px`,
                     transform: `translateY(${virtualItem.start}px)`,
                   }}
-                  onClick={() => onLineSelected(line?.id)}
-                >
-                  {line && (
-                    <div className="flex space-y-2 flex-col overflow-hidden">
-                      <span className="grow truncate text-sm font-medium">
-                        {line.id}: {line?.name}
-                      </span>
-
-                      <div className="gap-1.5 flex flex-row items-center">
-                        <LegIcon leg={line} />
-                        <LineBadge className="text-nowrap" leg={line} />
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  onClick={() => onStopSelected(stop?.id)}
+                />
               );
             })}
           </div>
