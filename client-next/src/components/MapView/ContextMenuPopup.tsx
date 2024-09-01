@@ -1,32 +1,19 @@
-import { TripQueryVariables } from '../../gql/graphql.ts';
-import { LngLat, Popup } from 'react-map-gl/maplibre';
 import { Button, ButtonGroup } from 'react-bootstrap';
+import { LngLat, Popup } from 'react-map-gl/maplibre';
+import { coordsToString, parseCoords } from '../../util/location.ts';
+import { useCoordinateStore } from '../../util/store.ts';
 
-export function ContextMenuPopup({
-  tripQueryVariables,
-  setTripQueryVariables,
-  coordinates,
-  onClose,
-}: {
-  tripQueryVariables: TripQueryVariables;
-  setTripQueryVariables: (variables: TripQueryVariables) => void;
-  coordinates: LngLat;
-  onClose: () => void;
-}) {
+export function ContextMenuPopup({ coordinates, onClose }: { coordinates: LngLat; onClose: () => void }) {
+  const setTo = useCoordinateStore((state) => state.setTo);
+  const setFrom = useCoordinateStore((state) => state.setFrom);
+
   return (
     <Popup longitude={coordinates.lng} latitude={coordinates.lat} anchor="bottom" onClose={onClose}>
       <ButtonGroup vertical>
         <Button
           onClick={() => {
-            setTripQueryVariables({
-              ...tripQueryVariables,
-              from: {
-                coordinates: {
-                  latitude: coordinates.lat,
-                  longitude: coordinates.lng,
-                },
-              },
-            });
+            const value = coordsToString(parseCoords(`${coordinates.lat} ${coordinates.lng}`));
+            setFrom(value);
             onClose();
           }}
         >
@@ -34,15 +21,8 @@ export function ContextMenuPopup({
         </Button>
         <Button
           onClick={() => {
-            setTripQueryVariables({
-              ...tripQueryVariables,
-              to: {
-                coordinates: {
-                  latitude: coordinates.lat,
-                  longitude: coordinates.lng,
-                },
-              },
-            });
+            const value = coordsToString(parseCoords(`${coordinates.lat} ${coordinates.lng}`));
+            setTo(value);
             onClose();
           }}
         >

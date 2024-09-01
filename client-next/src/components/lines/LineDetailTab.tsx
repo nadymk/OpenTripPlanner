@@ -1,38 +1,64 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { Line } from '../../gql/graphql';
-import { useLineQuery } from '../../hooks/useLineQuery';
+import { Tab } from '../../hooks/use-tab-context';
+import { useLineQuery } from './use-line-query';
 import { LegIcon } from '../icons/TransitIcons';
 import { Badge } from '../ui/Badge';
 import { BackButton } from '../ui/Button';
 import { LineBadge } from '../ui/LineDetail';
 import { LineDetails } from './LineBarDisplay';
+import { useScheduleQuery } from './use-schedule-query';
 
 export const LineDetailTab: FC<{
-  value?: string;
-  onClose: () => void;
-  onLineLoaded: (line: Line) => void;
+  tab: Tab<string | Line>;
+  onClose: (id: string) => void;
+  onLineLoaded: (id: string, ...line: Line[]) => void;
   onLineRemoved: (line: Line) => void;
-}> = ({ value, onClose, onLineLoaded, onLineRemoved }) => {
-  const { data, isLoading, refetch } = useLineQuery(value);
-  const [routesOpen, setRoutesOpen] = useState(false);
+  onScheduleSelected: (id: string) => void;
+}> = ({ tab, onClose, onLineLoaded, onLineRemoved, onScheduleSelected }) => {
+  const { data: apiData, isLoading, refetch } = useLineQuery(tab.data);
+  const [routesOpen, setRoutesOpen] = useState(true);
+  const [schedule, setSchedule] = useState();
+  const { data: scheduleData } = useScheduleQuery(schedule?.id);
 
-  console.log(data);
+  const data = useMemo(() => {
+    if (typeof tab.data === 'object') {
+      return tab.data;
+    }
+
+    return apiData;
+  }, [apiData, tab.data]);
 
   useEffect(() => {
     if (!data) {
       return;
     }
 
-    onLineLoaded(data);
+    onLineLoaded(tab.id, data);
     return () => onLineRemoved(data);
   }, [data]);
 
   const close = () => {
-    console.log(value);
-    // onLineRemoved(data);
-    onClose();
+    onClose(tab.id);
   };
+
+  const transform = useMemo(() => {
+    if (!scheduleData) {
+      return;
+    }
+
+    const quays = scheduleData.passingTimes.map((time) => time.quay);
+    const time = scheduleData.passingTimes.map((time) => time?.arrival.time);
+
+    return {
+      ...scheduleData,
+      authority: data?.authority,
+      transportMode: data?.transportMode,
+      quays,
+      time,
+    };
+  }, [scheduleData, data]);
 
   return (
     <>
@@ -65,20 +91,41 @@ export const LineDetailTab: FC<{
             <Badge>{data?.authority?.id}</Badge>
             <Badge>{data?.quays?.length} stops</Badge>
           </div>
-          <div className="flex flex-col">
-            <div className="border-b p-3">
+          <div className="sticky top-0 bg-white z-10 flex flex-col">
+            <div
+              className="flex flex-row items-center justify-between border-b p-3 shadow-sm"
+              onClick={() => setRoutesOpen(!routesOpen)}
+            >
               <span className="text-sm font-medium">Routes {data.serviceJourneys?.length}</span>
+
+              {schedule && <Badge className="text-sm">{schedule.id}</Badge>}
             </div>
-            {routesOpen &&
-              data.serviceJourneys?.map((pattern) => {
-                return (
-                  <div className="p-3">
-                    <span>{pattern.id}</span>
-                  </div>
-                );
-              })}
           </div>
-          <LineDetails trip={data} />
+
+          {routesOpen && (
+            <div className="flex flex-col overflow-y-auto m-3 rounded-lg border-b shadow-sm absolute top-0 h-[300px] border shadow-md bg-white w-[360px] left-[550px] z-[1000]">
+              <div className="sticky top-0 p-3 border-b shadow-sm bg-white">
+                <span className="text-sm font-medium">Scheduled routes</span>
+              </div>
+              {data.serviceJourneys
+                // ?.sort((a, b) => a.arrival.time?.localeCompare(b.arrival.time))
+                .map((pattern) => {
+                  // console.log(JSON.stringify(pattern, null, 2));
+                  return (
+                    <div className="flex flex-col p-3 border-b gap-3" onClick={() => setSchedule(pattern)}>
+                      <div className="flex flex-row justify-between">
+                        {/* <span>{pattern.id}</span> */}
+                        <span className="text-sm font-medium">
+                          {pattern?.passingTimes?.[0]?.arrival?.time} -{' '}
+                          {pattern?.passingTimes?.[pattern?.passingTimes?.length - 1]?.arrival?.time}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          )}
+          <LineDetails trip={transform ?? data} />
         </div>
       )}
     </>

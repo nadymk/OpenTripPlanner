@@ -2,17 +2,54 @@ import { FC, HTMLProps } from 'react';
 import { cn } from '../../util/cn';
 import { IoMdArrowBack } from 'react-icons/io';
 import { GoogleMapsIcon } from '../icons/GoogleMapsIcon';
+import { cva, VariantProps } from 'class-variance-authority';
 
-type BaseButtonProps = HTMLProps<HTMLButtonElement>;
+const button = cva('text-xs py-0.5 px-2 rounded-md text-black hover:bg-gray-300/30 disabled:cursor-forbidden', {
+  variants: {
+    variant: {
+      outline: 'border bg-none',
+      primary: ['text-black', 'border-transparent'],
+      // **or**
+      // primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
+      secondary: ['bg-white', 'text-gray-800', 'border-gray-400', 'hover:bg-gray-100'],
+    },
+    size: {
+      xs: "text-xs py-0.5 px-2",
+      sm: "text-xs py-0.5 px-2",
+      md: ['text-base', 'py-2', 'px-4'],
+    },
+  },
+  // compoundVariants: [
+  //   {
+  //     intent: 'primary',
+  //     size: 'medium',
+  //     class: 'uppercase',
+  //     // **or** if you're a React.js user, `className` may feel more consistent:
+  //     // className: "uppercase"
+  //   },
+  // ],
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md',
+  },
+});
+
+type BaseButtonProps = HTMLProps<HTMLButtonElement> & VariantProps<typeof button>;
+
+export const Button: FC<BaseButtonProps> = ({ className, size, variant, ...props }) => {
+  return (
+    <button className={cn(button({ size, variant }), className)} {...props}/>
+  );
+};
 
 export const RoundButton: FC<BaseButtonProps> = ({ className, children, ...props }) => {
   return (
-    <button
+    <Button
       className={cn('text-xs py-0.5 px-2 h-[32px] w-[32px] rounded-full text-black hover:bg-gray-300/30', className)}
       {...props}
     >
       {children}
-    </button>
+    </Button>
   );
 };
 

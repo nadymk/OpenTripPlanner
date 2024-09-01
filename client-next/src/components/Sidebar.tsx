@@ -4,6 +4,7 @@ import { GearIcon } from './icons/GearIcon';
 import { RailIcon } from './icons/TrainIcon';
 import logo from '../static/img/otp-logo.svg';
 import { BadgeCellContext, TabValue } from './ui/Tabs';
+import { PiTrainSimple } from 'react-icons/pi';
 
 export const Sidebar: FC<{
   tab: string;
@@ -17,7 +18,8 @@ export const Sidebar: FC<{
         </div>
 
         <SidebarButton
-          active={tab}
+          active={tab?.indexOf(':') !== -1 ? tab?.split(':')?.[0] : tab}
+          // active={tab}
           value="plan"
           onTabChange={onTabChange}
           tag={
@@ -31,7 +33,7 @@ export const Sidebar: FC<{
           }
           icon={
             <RailIcon
-              className={cn('h-[22px] w-[22px]', {
+              className={cn('group-hover:fill-white h-[22px] w-[22px]', {
                 'fill-gray-400': tab !== 'plan',
                 'fill-white': tab == 'plan',
               })}
@@ -41,7 +43,7 @@ export const Sidebar: FC<{
           Plan
         </SidebarButton>
         <SidebarButton
-          active={tab}
+          active={tab?.indexOf(':') !== -1 ? tab?.split(':')?.[0] : tab}
           value="lines"
           onTabChange={onTabChange}
           tag={
@@ -54,10 +56,10 @@ export const Sidebar: FC<{
             </>
           }
           icon={
-            <GearIcon
-              className={cn('h-[22px] w-[22px]', {
+            <PiTrainSimple
+              className={cn('group-hover:fill-gray-700 h-[28px] w-[28px]', {
                 'fill-gray-400': tab !== 'lines',
-                'fill-white': tab == 'lines',
+                'fill-gray-700': tab == 'lines',
               })}
             />
           }
@@ -65,7 +67,7 @@ export const Sidebar: FC<{
           Lines
         </SidebarButton>
         <SidebarButton
-          active={tab}
+          active={tab?.indexOf(':') !== -1 ? tab?.split(':')?.[0] : tab}
           value="stops"
           onTabChange={onTabChange}
           tag={
@@ -79,7 +81,7 @@ export const Sidebar: FC<{
           }
           icon={
             <GearIcon
-              className={cn('h-[22px] w-[22px]', {
+              className={cn('group-hover:fill-white h-[22px] w-[22px]', {
                 'fill-gray-400': tab !== 'stops',
                 'fill-white': tab == 'stops',
               })}
@@ -89,12 +91,12 @@ export const Sidebar: FC<{
           Stops
         </SidebarButton>
         <SidebarButton
-          active={tab}
+          active={tab?.indexOf(':') !== -1 ? tab?.split(':')?.[0] : tab}
           value="config"
           onTabChange={onTabChange}
           icon={
             <GearIcon
-              className={cn('h-[22px] w-[22px]', {
+              className={cn('group-hover:fill-white h-[22px] w-[22px]', {
                 'fill-gray-400': tab !== 'config',
                 'fill-white': tab == 'config',
               })}
@@ -119,20 +121,20 @@ export const SidebarButton: FC<{
   const isActive = active === value;
   return (
     <button
-      className="flex flex-col space-y-2 px-3 py-3 items-center justify-center"
+      className="group flex flex-col space-y-2 px-3 py-3 items-center justify-center border-b hover:bg-gray-300/30"
       onClick={() => onTabChange(value)}
     >
       <div
         className={cn('flex relative justify-center items-center h-[38px] w-[38px] rounded-lg', {
-          'bg-gray-700': isActive,
-          'bg-gray-100': !isActive,
+          // 'bg-gray-400': isActive,
+          // 'bg-gray-100': !isActive,
         })}
       >
         {tag && tag}
         {icon && icon}
       </div>
       <span
-        className={cn('font-medium text-xs', {
+        className={cn('font-medium text-xs group-hover:text-gray-700', {
           'text-gray-700': isActive,
           'text-gray-500': !isActive,
         })}

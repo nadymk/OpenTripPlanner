@@ -1,5 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useRef, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { IoMdRefresh } from 'react-icons/io';
 import { useDebounce } from 'use-debounce';
@@ -11,15 +11,11 @@ import { useQuaysQuery } from './use-quays-query';
 export const StopsListTab: FC<{
   onStopSelected: (id: string) => void;
 }> = ({ onStopSelected }) => {
-  const { data, isLoading, refetch } = useQuaysQuery();
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
   const parentRef = useRef();
   const [search, setSearch] = useState<string>();
   const [searchDebounced] = useDebounce(search, 500);
+
+  const { data, isLoading, refetch } = useQuaysQuery();
 
   const filtered = useMemo(() => {
     if (!searchDebounced || searchDebounced.length === 0) {
@@ -39,8 +35,6 @@ export const StopsListTab: FC<{
     estimateSize: () => 54 + 32,
     overscan: 30,
   });
-
-  console.log(data);
 
   return (
     <>

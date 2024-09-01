@@ -1,12 +1,24 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { App } from './screens/App';
-import './style.css';
-import './setupDayjs';
-import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
+import { TabProvider } from './hooks/use-tab-context';
+import { routeTree } from './routeTree.gen';
 
-const queryClient = new QueryClient({
+import './setupDayjs';
+import './style.css';
+
+const router = createRouter({ routeTree });
+
+// Register the router instance for type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
@@ -17,7 +29,10 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <TabProvider>
+        <RouterProvider router={router} />
+        {/* <App /> */}
+      </TabProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 );

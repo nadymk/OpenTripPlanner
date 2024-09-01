@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { FC, useMemo } from 'react';
-import { Leg } from '../../gql/graphql';
+import { Leg, Line } from '../../gql/graphql';
 import { cn } from '../../util/cn';
 import { formatDistance } from '../../util/formatDistance';
 import { getOperatorColor, isBus, isTransit } from '../../util/routes';
@@ -9,6 +9,7 @@ import { LegIcon } from '../icons/TransitIcons';
 import { Badge } from '../ui/Badge';
 import { Bar, InterChangeDot, LegDetailLeftContainer, LineBadge } from '../ui/LineDetail';
 import { LegTime } from './LegTime';
+import { useTabContext } from '../../hooks/use-tab-context';
 
 export const ItineraryLegDetails: FC<{
   leg: Leg;
@@ -16,7 +17,9 @@ export const ItineraryLegDetails: FC<{
   previousLeg?: Leg;
   isFirst: boolean;
   isLast: boolean;
-}> = ({ leg, isFirst, isLast, previousLeg, nextLeg }) => {
+  onLineSelected: (line: Line) => void;
+}> = ({ leg, isFirst, isLast, previousLeg, nextLeg, onLineSelected }) => {
+
   const isLegStartSameAsLegEnd = () => {
     return dayjs(previousLeg?.expectedEndTime).isSame(dayjs(leg.expectedStartTime));
   };
@@ -69,7 +72,12 @@ export const ItineraryLegDetails: FC<{
           <div className="grow flex flex-row relative py-3">
             <Bar leg={leg} className="-top-[12px] -bottom-[12px]" />
             <div className="ml-6 pt-[26px] pb-[26px] border-y w-full">
-              <div className="flex flex-col space-y-1">
+              <div
+                className="flex flex-col space-y-1"
+                onClick={() => {
+                  onLineSelected(leg.line)
+                }}
+              >
                 {isTransit(leg) && (
                   <span className="space-x-1.5">
                     <LineBadge leg={leg} />

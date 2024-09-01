@@ -10,6 +10,22 @@ const query = graphql(`
       name
       latitude
       longitude
+      lines {
+        id
+        publicCode
+        name
+        transportMode
+        authority {
+          id
+          name
+        }
+        quays {
+          id
+          name
+          latitude
+          longitude
+        }
+      }
       journeyPatterns {
         id
         name
@@ -34,11 +50,9 @@ const query = graphql(`
   }
 `);
 
-export const useQuayQuery = (id?: string) =>
+export const useQuayQuery = (id?: string | Quay) =>
   useQuery({
     queryKey: ['stop', id],
-    queryFn: async () => {
-      return (await graphQLClient(query, { id })).quay as Quay;
-    },
-    enabled: id !== undefined,
+    queryFn: async () => (await graphQLClient(query, { id })).quay as Quay,
+    enabled: id !== undefined && typeof id === 'string',
   });

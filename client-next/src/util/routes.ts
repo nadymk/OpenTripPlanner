@@ -1,4 +1,4 @@
-import { Leg } from '../gql/graphql';
+import { Leg, Line } from '../gql/graphql';
 
 export const isMode = (leg: Leg, mode: string) => leg?.mode === mode || leg?.transportMode === mode;
 
@@ -200,3 +200,15 @@ export const getOperatorColor = (leg: Leg): { color: string; text?: string } => 
     color: '#ff00ff',
   };
 };
+
+export const getRouteName = (leg: Leg | Line) => {
+  if (leg?.publicCode) {
+    return leg.publicCode;
+  }
+
+  if (leg.line?.publicCode) {
+    return leg.line?.publicCode;
+  }
+
+  return leg.authority?.name;
+}

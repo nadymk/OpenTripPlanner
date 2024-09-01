@@ -9,94 +9,97 @@ export function LegLines({ tripPattern }: { tripPattern?: TripPattern }) {
     <>
       {tripPattern?.legs.map((leg, i) => {
         const coords = decode(leg.pointsOnLink.points as string, 5).map((value) => value.reverse());
-        const first = coords[0];
-        const last = coords[coords.length - 1];
 
-        return (
-          leg.pointsOnLink && (
-            <>
-              <Source
-                key={`${leg.id}_stop`}
-                type="geojson"
-                data={{
-                  type: 'Feature',
-                  properties: {},
-                  geometry: {
-                    type: 'LineString',
-                    coordinates: coords,
-                  },
-                }}
-              >
-                <Layer
-                  type="line"
-                  layout={{
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                  }}
-                  paint={{
-                    'line-color': getOperatorColor(leg).color,
-                    'line-width': 5,
-                  }}
-                />
-                <Layer
-                  type="circle"
-                  paint={{
-                    'circle-color': '#ffffff',
-                    'circle-stroke-width': isFoot(leg) ? 1 : 2,
-                    'circle-stroke-color': getOperatorColor(leg).color ?? '#000000',
-                    'circle-radius': isFoot(leg) ? 2 : 3,
-                  }}
-                />
-              </Source>
-              <Source
-                key={`${leg.id}_first`}
-                type="geojson"
-                data={{
-                  type: 'Feature',
-                  properties: {},
-                  geometry: {
-                    type: 'Point',
-                    coordinates: first,
-                  },
-                }}
-              >
-                <Layer
-                  type="circle"
-                  paint={{
-                    'circle-color': '#ffffff',
-                    'circle-stroke-width': isFoot(leg) ? 1 : 2,
-                    'circle-stroke-color': '#000000',
-                    // 'circle-stroke-color': getOperatorColor(leg).color ?? '#000000',
-                    'circle-radius': isFoot(leg) ? 2 : 4,
-                  }}
-                />
-              </Source>
-              <Source
-                key={`${leg.id}_last`}
-                type="geojson"
-                data={{
-                  type: 'Feature',
-                  properties: {},
-                  geometry: {
-                    type: 'Point',
-                    coordinates: last,
-                  },
-                }}
-              >
-                <Layer
-                  type="circle"
-                  paint={{
-                    'circle-color': '#ffffff',
-                    'circle-stroke-width': isFoot(leg) ? 1 : 2,
-                    'circle-stroke-color': '#000000',
-                    // 'circle-stroke-color': getOperatorColor(leg).color ?? '#000000',
-                    'circle-radius': isFoot(leg) ? 2 : 4,
-                  }}
-                />
-              </Source>
-            </>
-          )
-        );
+        return <LegLines3 coords={coords} selectedLine={leg} />;
+
+        // const first = coords[0];
+        // const last = coords[coords.length - 1];
+
+        // return (
+        //   leg.pointsOnLink && (
+        //     <>
+        //       <Source
+        //         key={`${leg.id}_stop`}
+        //         type="geojson"
+        //         data={{
+        //           type: 'Feature',
+        //           properties: {},
+        //           geometry: {
+        //             type: 'LineString',
+        //             coordinates: coords,
+        //           },
+        //         }}
+        //       >
+        //         <Layer
+        //           type="line"
+        //           layout={{
+        //             'line-join': 'round',
+        //             'line-cap': 'round',
+        //           }}
+        //           paint={{
+        //             'line-color': getOperatorColor(leg).color,
+        //             'line-width': 5,
+        //           }}
+        //         />
+        //         <Layer
+        //           type="circle"
+        //           paint={{
+        //             'circle-color': '#ffffff',
+        //             'circle-stroke-width': isFoot(leg) ? 1 : 2,
+        //             'circle-stroke-color': getOperatorColor(leg).color ?? '#000000',
+        //             'circle-radius': isFoot(leg) ? 2 : 3,
+        //           }}
+        //         />
+        //       </Source>
+        //       <Source
+        //         key={`${leg.id}_first`}
+        //         type="geojson"
+        //         data={{
+        //           type: 'Feature',
+        //           properties: {},
+        //           geometry: {
+        //             type: 'Point',
+        //             coordinates: first,
+        //           },
+        //         }}
+        //       >
+        //         <Layer
+        //           type="circle"
+        //           paint={{
+        //             'circle-color': '#ffffff',
+        //             'circle-stroke-width': isFoot(leg) ? 1 : 2,
+        //             'circle-stroke-color': '#000000',
+        //             // 'circle-stroke-color': getOperatorColor(leg).color ?? '#000000',
+        //             'circle-radius': isFoot(leg) ? 2 : 4,
+        //           }}
+        //         />
+        //       </Source>
+        //       <Source
+        //         key={`${leg.id}_last`}
+        //         type="geojson"
+        //         data={{
+        //           type: 'Feature',
+        //           properties: {},
+        //           geometry: {
+        //             type: 'Point',
+        //             coordinates: last,
+        //           },
+        //         }}
+        //       >
+        //         <Layer
+        //           type="circle"
+        //           paint={{
+        //             'circle-color': '#ffffff',
+        //             'circle-stroke-width': isFoot(leg) ? 1 : 2,
+        //             'circle-stroke-color': '#000000',
+        //             // 'circle-stroke-color': getOperatorColor(leg).color ?? '#000000',
+        //             'circle-radius': isFoot(leg) ? 2 : 4,
+        //           }}
+        //         />
+        //       </Source>
+        //     </>
+        //   )
+        // );
       })}
     </>
   );
@@ -113,12 +116,58 @@ export function LegLines2({ selectedLine }: { selectedLine: Line }) {
     return null;
   }
 
+  return <LegLines3 coords={coords} selectedLine={selectedLine} />;
+}
+
+export function LegLines3({ coords, selectedLine }: { selectedLine: Line }) {
+  // const coords = selectedLine?.quays
+  //   ?.map((quay) => {
+  //     return [quay.latitude, quay.longitude];
+  //   })
+  //   ?.map((value) => value.reverse());
+
+  // if (!coords) {
+  //   return null;
+  // }
+
   const first = coords[0];
   const last = coords[coords.length - 1];
   const leg = selectedLine;
 
   return (
     <>
+      <Source
+        id="earthquakes"
+        type="geojson"
+        data={{
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: coords,
+          },
+        }}
+        // data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
+        cluster={true}
+        clusterMaxZoom={14}
+        clusterRadius={50}
+      >
+        <Layer
+          {...{
+            id: 'clusters',
+            type: 'circle',
+            // source: 'earthquakes',
+            // filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
+              'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+            },
+          }}
+        />
+        {/* <Layer {...clusterCountLayer} />
+        <Layer {...unclusteredPointLayer} /> */}
+      </Source>
+
       <Source
         type="geojson"
         data={{
