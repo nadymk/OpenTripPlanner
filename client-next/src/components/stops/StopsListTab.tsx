@@ -7,11 +7,14 @@ import { RoundButton } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { StopsListItem } from './StopsListItem';
 import { useQuaysQuery } from './use-quays-query';
+import { useScrollPosition } from '../../hooks/use-scroll-position';
+import { Tab, useTabContext } from '../../hooks/use-tab-context';
+import { Quay } from '../../gql/graphql';
 
-export const StopsListTab: FC<{
-  onStopSelected: (id: string) => void;
-}> = ({ onStopSelected }) => {
-  const parentRef = useRef();
+export const StopsListTab: FC<{ tab: Tab<string, { scrollPosition: number }> }> = ({ tab: { id, attributes } }) => {
+  const { add, updateAttributes } = useTabContext();
+  const { ref, position: scrollPosition } = useScrollPosition(attributes.scrollPosition);
+
   const [search, setSearch] = useState<string>();
   const [searchDebounced] = useDebounce(search, 500);
 
@@ -31,10 +34,15 @@ export const StopsListTab: FC<{
 
   const rowVirtualizer = useVirtualizer({
     count: filtered?.length ?? 0,
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => ref.current,
     estimateSize: () => 54 + 32,
     overscan: 30,
   });
+
+  const onStopSelected = (stop: Quay) => {
+    updateAttributes(id, { scrollPosition });
+    add('stops:detail', stop.id);
+  };
 
   return (
     <>
@@ -56,7 +64,7 @@ export const StopsListTab: FC<{
           </div>
         </div>
       </div>
-      <div ref={parentRef} className="overflow-y-auto h-full">
+      <div ref={ref} className="overflow-y-auto h-full">
         {isLoading && (
           <div className="w-full h-full space-y-3 flex flex-col items-center justify-center">
             <Spinner as="span" animation="border" size="md" role="status" aria-hidden="true" />
@@ -83,7 +91,7 @@ export const StopsListTab: FC<{
                     height: `${virtualItem.size}px`,
                     transform: `translateY(${virtualItem.start}px)`,
                   }}
-                  onClick={() => onStopSelected(stop?.id)}
+                  onClick={() => onStopSelected(stop)}
                 />
               );
             })}

@@ -1,5 +1,5 @@
 import { it } from 'vitest';
-import { ItineraryListContainer } from './ItineraryListContainer';
+import { TripPlanTab } from './TripPlanTab.tsx';
 import { render } from '@testing-library/react';
 import { QueryType } from '../../gql/graphql.ts';
 
@@ -2383,7 +2383,7 @@ const tripQueryResult = {
 
 it('renders without crashing', () => {
   render(
-    <ItineraryListContainer
+    <TripPlanTab
       tripQueryResult={tripQueryResult as unknown as QueryType}
       selectedTripPatternIndex={0}
       setSelectedTripPatternIndex={() => {}}

@@ -20,7 +20,7 @@ export const Sidebar: FC<{
         <SidebarButton
           active={tab?.indexOf(':') !== -1 ? tab?.split(':')?.[0] : tab}
           // active={tab}
-          value="plan"
+          value="trip"
           onTabChange={onTabChange}
           tag={
             <>
@@ -34,8 +34,8 @@ export const Sidebar: FC<{
           icon={
             <RailIcon
               className={cn('group-hover:fill-white h-[22px] w-[22px]', {
-                'fill-gray-400': tab !== 'plan',
-                'fill-white': tab == 'plan',
+                'fill-gray-400': tab !== 'trip',
+                'fill-white': tab == 'trip',
               })}
             />
           }
