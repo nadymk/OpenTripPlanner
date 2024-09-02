@@ -2,7 +2,9 @@ import * as React from 'react';
 import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 import { cn } from '../../util/cn';
 
-const TabProps = {};
+const TabProps = {
+  
+};
 
 export const BadgeCellContext = createContext<{
   value: string;

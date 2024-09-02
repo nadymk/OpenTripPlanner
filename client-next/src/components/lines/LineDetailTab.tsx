@@ -1,22 +1,19 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { Line } from '../../gql/graphql';
-import { Tab } from '../../hooks/use-tab-context';
-import { useLineQuery } from './use-line-query';
+import { TabProps } from '../../screens/TabRouter';
 import { LegIcon } from '../icons/TransitIcons';
 import { Badge } from '../ui/Badge';
 import { BackButton } from '../ui/Button';
 import { LineBadge } from '../ui/LineDetail';
 import { LineDetails } from './LineBarDisplay';
+import { useLineQuery } from './use-line-query';
 import { useScheduleQuery } from './use-schedule-query';
 
-export const LineDetailTab: FC<{
-  tab: Tab<string | Line>;
-  onClose: (id: string) => void;
-  onLineLoaded: (id: string, ...line: Line[]) => void;
-  onLineRemoved: (line: Line) => void;
-  onScheduleSelected: (id: string) => void;
-}> = ({ tab, onClose, onLineLoaded, onLineRemoved, onScheduleSelected }) => {
+export const LineDetailTab: FC<TabProps<string, TabRouterContext>> = ({
+  tab,
+  onClose,
+  context: { addLineToMap: onLineLoaded, removeLineFromMap: onLineRemoved },
+}) => {
   const { data: apiData, isLoading, refetch } = useLineQuery(tab.data);
   const [routesOpen, setRoutesOpen] = useState(true);
   const [schedule, setSchedule] = useState();

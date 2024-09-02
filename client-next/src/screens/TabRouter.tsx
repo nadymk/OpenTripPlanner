@@ -1,10 +1,10 @@
 import React, { FC, HTMLProps, ReactNode, useMemo, useRef } from 'react';
 import { Tab, useTabContext } from '../hooks/use-tab-context';
 
-type TabProps<T = any, A extends Record<string, any> = Record<string, any>> = {
+export type TabProps<T = never, A extends Record<string, any> = Record<string, any>> = {
   tab: Tab<T, A>;
   onClose: () => void;
-  context: Record<string, any>;
+  context: TabRouterContext;
 };
 
 type Props = HTMLProps<HTMLDivElement> & {
@@ -38,11 +38,9 @@ export const TabRoute: FC<Props> = ({ children, context, ...props }) => {
     return getComponent(tab);
   }, [tab]);
 
-  return (
-    <>
-      <Component tab={tab} onClose={() => remove(tab.id)} context={context} />
-    </>
-  );
+  return <Component tab={tab} onClose={() => remove(tab.id)} context={context} />;
 };
 
-export const TabPath: FC<HTMLProps<HTMLDivElement>> = ({ id, component }) => null;
+type TabPathProps<T, A> = { id: string; component: FC<TabProps<T, A>> };
+
+export const TabPath = <T, A>({ id, component, ...props }: TabPathProps<T, A>) => null;

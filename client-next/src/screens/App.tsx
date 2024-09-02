@@ -1,86 +1,67 @@
-import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { ViewState } from 'react-map-gl';
-import { ItineraryListContainer } from '../components/ItineraryList/ItineraryListContainer';
+import { TripDetailTab } from '../components/ItineraryList/TripDetailTab';
+import { TripPlanTab } from '../components/ItineraryList/TripPlanTab';
 import { LineDetailTab } from '../components/lines/LineDetailTab';
 import { LineListTab } from '../components/lines/LineListTab';
 import { LineScheduleDetailTab } from '../components/lines/LineScheduleDetailTab';
 import { MapView } from '../components/MapView/MapView';
-import { SearchBar } from '../components/SearchBar/SearchBar';
 import { Sidebar } from '../components/Sidebar';
 import { StopsDetailTab } from '../components/stops/StopsDetailTab';
 import { StopsListTab } from '../components/stops/StopsListTab';
-import { Line, TripQueryVariables } from '../gql/graphql';
+import { Line } from '../gql/graphql';
 import { useTabContext } from '../hooks/use-tab-context';
 import { useServerInfo } from '../hooks/useServerInfo';
-import { coordsToString, parseCoords } from '../util/location';
 import { useCoordinateStore } from '../util/store';
 import { TabPath, TabRoute } from './TabRouter';
-import { COORDINATE_PRECISION } from '../components/SearchBar/constants';
+import { useSearchParamUpdater } from './use-search-param';
+import { useMapFeatures } from './use-map-features';
 
 export function App() {
-  const { tab, tabs, add, remove, clear } = useTabContext();
-  const [selectedLine, setSelectedLine] = useState<Record<string, Line[]>>({});
+  const { tab, add, clear } = useTabContext();
+  // const [selectedLine, setSelectedLine] = useState<Record<string, Line[]>>({});
   const to = useCoordinateStore((state) => state.to);
   const from = useCoordinateStore((state) => state.from);
   const viewState = useCoordinateStore((state) => state.viewState);
   const setViewState = useCoordinateStore((state) => state.setViewState);
+ 
+  const { active: selectedLine, add: addLine, remove: onRemoveLine, clear: clearLines } = useMapFeatures();
 
   const serverInfo = useServerInfo();
+  useSearchParamUpdater(tab, from, to, viewState);
 
-  const navigate = useNavigate();
-  const query = useSearch({
-    strict: false,
-  });
+  // const addLine = (id: string, ...line: any) => {
+  //   setSelectedLine((prev) => ({
+  //     ...prev,
+  //     [id]: [...(line[id] ?? []), ...line],
+  //   }));
+  // };
 
-  useEffect(() => {
-    const fromCoords = coordsToString(parseCoords(from)) ?? from ?? undefined;
-    const toCoords = coordsToString(parseCoords(to)) ?? to ?? undefined;
-    const pos = coordsToString(viewState);
+  // const onRemoveLine = (id: string, line?: any) => {
+  //   if (!line) {
+  //     setSelectedLine((prev) => {
+  //       return {
+  //         ...prev,
+  //         [id]: [],
+  //       };
+  //     });
+  //     return;
+  //   }
 
-    navigate({
-      to: `/${tab.type}/${btoa(fromCoords)}/${btoa(toCoords)}`,
-      search: {
-        ...query,
-        z: Number(Number(viewState.zoom).toPrecision(COORDINATE_PRECISION)),
-        pos: pos,
-        // from: fromCoords,
-        // to: toCoords,
-      },
-    });
-  }, [tab.type, from, to, viewState]);
-
-  const addLine = (id: string, ...line: any) => {
-    setSelectedLine((prev) => ({
-      ...prev,
-      [id]: [...(line[id] ?? []), ...line],
-    }));
-  };
-
-  const onRemoveLine = (id: string, line: any) => {
-    if (!line) {
-      setSelectedLine((prev) => {
-        return {
-          ...prev,
-          [id]: [],
-        };
-      });
-      return;
-    }
-
-    setSelectedLine((prev) => {
-      return {
-        ...prev,
-        [id]: prev[id]?.filter((value) => value?.id !== line?.id),
-      };
-    });
-  };
+  //   setSelectedLine((prev) => {
+  //     return {
+  //       ...prev,
+  //       [id]: prev[id]?.filter((value) => value?.id !== line?.id),
+  //     };
+  //   });
+  // };
 
   const onTabChange = (tab: string) => {
     clear();
+    clearLines();
     add(tab, undefined);
-    setSelectedLine({});
+    // setSelectedLine({});
   };
 
   return (
@@ -101,52 +82,13 @@ export function App() {
                   removeLineFromMap: onRemoveLine,
                 }}
               >
-                <TabPath
-                  id="lines"
-                  component={({ tab }) => <LineListTab tab={tab} onLineSelected={(id) => add('lines:detail', id)} />}
-                />
-                <TabPath
-                  id="lines:detail"
-                  component={({ tab, onClose }) => (
-                    <LineDetailTab
-                      tab={tab}
-                      onClose={onClose}
-                      onLineRemoved={onRemoveLine}
-                      onLineLoaded={addLine}
-                      onScheduleSelected={(id) => add('lines:schedule:detail', id)}
-                    />
-                  )}
-                />
-                <TabPath
-                  id="lines:schedule:detail"
-                  component={({ ...props }) => (
-                    <LineScheduleDetailTab {...props} onLineRemoved={onRemoveLine} onLineLoaded={addLine} />
-                  )}
-                />
-                <TabPath
-                  id="stops"
-                  component={() => <StopsListTab onStopSelected={(id) => add('stops:detail', id)} />}
-                />
-                <TabPath
-                  id="stops:detail"
-                  component={({ tab, onClose }) => (
-                    <StopsDetailTab
-                      tab={tab}
-                      onClose={onClose}
-                      onLineRemoved={onRemoveLine}
-                      onLineLoaded={addLine}
-                      onLineSelected={(line) => {
-                        add('lines:detail', line);
-                      }}
-                    />
-                  )}
-                />
-                <TabPath
-                  id="plan"
-                  component={({ tab, context }) => {
-                    return <ItineraryListContainer tab={tab} {...context} />;
-                  }}
-                />
+                <TabPath id="trip" component={TripPlanTab} />
+                <TabPath id="trip:detail" component={TripDetailTab} />
+                <TabPath id="lines" component={LineListTab} />
+                <TabPath id="lines:detail" component={LineDetailTab} />
+                <TabPath id="lines:schedule:detail" component={LineScheduleDetailTab} />
+                <TabPath id="stops" component={StopsListTab} />
+                <TabPath id="stops:detail" component={StopsDetailTab} />
               </TabRoute>
             </div>
           </div>

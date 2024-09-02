@@ -2,7 +2,7 @@ import { createFileRoute, createRootRoute, createRoute, Link, Outlet } from '@ta
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { App } from '../../../../screens/App';
 
-export const Route = createFileRoute('/$tabId/$from/$to')({
+export const Route = createFileRoute('/$tab/$from/$to/__root')({
   component: App,
 
   //   () => (

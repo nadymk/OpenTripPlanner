@@ -1,20 +1,22 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { IoMdRefresh } from 'react-icons/io';
 import { useDebounce } from 'use-debounce';
+import { useScrollPosition } from '../../hooks/use-scroll-position';
+import { useTabContext } from '../../hooks/use-tab-context';
 import { useRoutesQuery } from '../../hooks/useRoutesQuery';
+import { TabProps } from '../../screens/TabRouter';
 import { LegIcon } from '../icons/TransitIcons';
 import { RoundButton } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { LineBadge } from '../ui/LineDetail';
 
-export const LineListTab: FC<{
-  onLineSelected: (id: string) => void;
-}> = ({ onLineSelected }) => {
+export const LineListTab: FC<TabProps<never, { scrollPosition: number }>> = ({ tab }) => {
+  const { add, updateAttributes } = useTabContext();
+  const { ref, position: scrollPosition } = useScrollPosition(tab.attributes.scrollPosition);
   const { data, isLoading, refetch: onRefresh } = useRoutesQuery();
 
-  const parentRef = useRef();
   const [search, setSearch] = useState<string>();
   const [searchDebounced] = useDebounce(search, 500);
 
@@ -32,10 +34,15 @@ export const LineListTab: FC<{
 
   const rowVirtualizer = useVirtualizer({
     count: filtered?.length ?? 0,
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => ref.current,
     estimateSize: () => 54 + 32,
     overscan: 30,
   });
+
+  const onLineSelected = (id: string) => {
+    add('lines:detail', id);
+    updateAttributes(tab.id, { scrollPosition });
+  };
 
   return (
     <>
@@ -57,7 +64,7 @@ export const LineListTab: FC<{
           </div>
         </div>
       </div>
-      <div ref={parentRef} className="overflow-y-auto h-full">
+      <div ref={ref} className="overflow-y-auto h-full">
         {isLoading && (
           <div className="w-full h-full space-y-3 flex flex-col items-center justify-center">
             <Spinner as="span" animation="border" size="md" role="status" aria-hidden="true" />
