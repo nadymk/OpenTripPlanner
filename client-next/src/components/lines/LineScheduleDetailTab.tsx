@@ -1,21 +1,15 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { Line, ServiceJourney } from '../../gql/graphql';
-import { Tab } from '../../hooks/use-tab-context';
-import { useLineQuery } from './use-line-query';
-import { LegIcon } from '../icons/TransitIcons';
+import { TabProps } from '../../screens/TabRouter';
 import { Badge } from '../ui/Badge';
 import { BackButton } from '../ui/Button';
-import { LineBadge } from '../ui/LineDetail';
-import { LineDetails } from './LineBarDisplay';
 import { useScheduleQuery } from './use-schedule-query';
 
-export const LineScheduleDetailTab: FC<{
-  tab: Tab<string | ServiceJourney>;
-  onClose: () => void;
-  onLineLoaded: (id: string, ...line: Line[]) => void;
-  onLineRemoved: (line: Line) => void;
-}> = ({ tab, onClose, onLineLoaded, onLineRemoved }) => {
+export const LineScheduleDetailTab: FC<TabProps<never, TabRouterContext>> = ({
+  tab,
+  onClose,
+  context: { addLineToMap: onLineLoaded, removeLineFromMap: onLineRemoved },
+}) => {
   const { data: apiData, isLoading, refetch } = useScheduleQuery(tab.data);
 
   const data = useMemo(() => {

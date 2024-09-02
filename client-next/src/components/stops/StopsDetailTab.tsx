@@ -1,21 +1,23 @@
 import { FC, useEffect, useMemo } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { JourneyPattern, Line, Maybe, Quay } from '../../gql/graphql';
+import { Line } from '../../gql/graphql';
+import { useScrollPosition } from '../../hooks/use-scroll-position';
+import { useTabContext } from '../../hooks/use-tab-context';
+import { TabProps } from '../../screens/TabRouter';
 import { LegIcon } from '../icons/TransitIcons';
 import { Badge } from '../ui/Badge';
 import { BackButton } from '../ui/Button';
 import { LineBadge } from '../ui/LineDetail';
 import { useQuayQuery } from './use-quay-query';
-import { Tab } from '../../hooks/use-tab-context';
 
-export const StopsDetailTab: FC<{
-  tab: Tab<string | Quay>;
-  onClose: () => void;
-  onLineLoaded: (line: Maybe<Line>) => void;
-  onLineRemoved: (line: Maybe<Line>) => void;
-  onLineSelected: (line: string) => void;
-}> = ({ tab: { id, data: value }, onClose, onLineLoaded, onLineRemoved, onLineSelected }) => {
+export const StopsDetailTab: FC<TabProps<never, TabRouterContext>> = ({
+  tab: { id, data: value, attributes },
+  context: { addLineToMap: onLineLoaded, removeLineFromMap: onLineRemoved },
+  onClose,
+}) => {
   const { data: apiData, isLoading } = useQuayQuery(value);
+  const { add, updateAttributes } = useTabContext();
+  const { ref, position: scrollPosition } = useScrollPosition(attributes.scrollPosition);
 
   const data = useMemo(() => {
     if (typeof value === 'object') {
@@ -34,6 +36,11 @@ export const StopsDetailTab: FC<{
     // data?.lines?.forEach(onLineLoaded);
     return () => data.lines.forEach(onLineRemoved);
   }, [data]);
+
+  const onLineSelected = (line: Line) => {
+    updateAttributes(id, { scrollPosition });
+    add('lines:detail', line.id);
+  };
 
   const close = () => {
     if (data) {
@@ -58,7 +65,7 @@ export const StopsDetailTab: FC<{
         </div>
       )}
       {!isLoading && data && (
-        <div className="flex flex-col overflow-y-auto h-full">
+        <div className="flex flex-col overflow-y-auto h-full" ref={ref}>
           <div className="flex flex-row flex-wrap gap-2 w-full border-b py-3 px-3 space-x-2">
             <Badge>{data?.id}</Badge>
             <Badge>{data?.authority?.id}</Badge>
@@ -72,9 +79,7 @@ export const StopsDetailTab: FC<{
               return (
                 <div
                   className="p-3 flex flex-row flex-wrap border-b cursor-pointer hover:bg-gray-100"
-                  onClick={() => {
-                    onLineSelected(line.id);
-                  }}
+                  onClick={() => onLineSelected(line)}
                 >
                   <div className="flex gap-1.5 flex-wrap flex-row">
                     <span className="space-x-1.5">

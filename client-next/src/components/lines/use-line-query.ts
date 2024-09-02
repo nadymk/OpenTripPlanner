@@ -34,7 +34,7 @@ const query = graphql(`
   }
 `);
 
-export const useLineQuery = (id: string | Line) =>
+export const useLineQuery = (id: string) =>
   useQuery({
     queryKey: ['line', id],
     queryFn: async () => (await graphQLClient(query, { id }))?.line as Line,

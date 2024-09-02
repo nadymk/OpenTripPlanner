@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
-import { cn } from '../util/cn';
+import { createContext, useContext } from 'react';
 
 export type Tab<T = any, A extends Record<string, any> = Record<string, any>> = {
   id: string;
@@ -14,11 +13,13 @@ export const TabContext = createContext<{
   add: (type: string, data: any) => string;
   remove: (id: string) => void;
   clear: () => void;
+  updateAttributes: <T>(id: string, attributes: T) => void;
 }>({
   tabs: [],
   add: (type: string, tab: any) => '',
   remove: () => {},
   clear: () => {},
+  // hasBack
 });
 
 export const useTabContext = () => {
@@ -31,7 +32,7 @@ export const TabProvider = ({ children }) => {
   const [tabs, setTabs] = React.useState<Tab[]>([
     {
       id: 'idk',
-      type: 'plan',
+      type: 'trip',
       data: undefined,
     },
   ]);

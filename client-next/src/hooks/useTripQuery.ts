@@ -122,3 +122,5 @@ export const useTripQuery = (toCoords: string, fromCoords: string, variables) =>
         pageCursor: variables.pageCursor ?? 0,
       }),
   });
+
+  
