@@ -1,10 +1,8 @@
 import { FC, ReactNode, useContext } from 'react';
-import { cn } from '../util/cn';
-import { GearIcon } from './icons/GearIcon';
-import { RailIcon } from './icons/TrainIcon';
+import { PiFlag, PiGearSix, PiMapPin, PiTrainSimple } from 'react-icons/pi';
 import logo from '../static/img/otp-logo.svg';
+import { cn } from '../util/cn';
 import { BadgeCellContext, TabValue } from './ui/Tabs';
-import { PiTrainSimple } from 'react-icons/pi';
 
 export const Sidebar: FC<{
   tab: string;
@@ -32,10 +30,10 @@ export const Sidebar: FC<{
             </>
           }
           icon={
-            <RailIcon
-              className={cn('group-hover:fill-white h-[22px] w-[22px]', {
+            <PiFlag
+              className={cn('group-hover:fill-gray-700 h-[28px] w-[28px]', {
                 'fill-gray-400': tab !== 'trip',
-                'fill-white': tab == 'trip',
+                'fill-gray-700': tab == 'trip',
               })}
             />
           }
@@ -80,10 +78,10 @@ export const Sidebar: FC<{
             </>
           }
           icon={
-            <GearIcon
-              className={cn('group-hover:fill-white h-[22px] w-[22px]', {
+            <PiMapPin
+              className={cn('group-hover:fill-gray-700 h-[28px] w-[28px]', {
                 'fill-gray-400': tab !== 'stops',
-                'fill-white': tab == 'stops',
+                'fill-gray-700': tab == 'stops',
               })}
             />
           }
@@ -95,10 +93,10 @@ export const Sidebar: FC<{
           value="config"
           onTabChange={onTabChange}
           icon={
-            <GearIcon
-              className={cn('group-hover:fill-white h-[22px] w-[22px]', {
+            <PiGearSix
+              className={cn('group-hover:fill-gray-700 h-[28px] w-[28px]', {
                 'fill-gray-400': tab !== 'config',
-                'fill-white': tab == 'config',
+                'fill-gray-700': tab == 'config',
               })}
             />
           }
