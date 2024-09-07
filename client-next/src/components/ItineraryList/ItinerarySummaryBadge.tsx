@@ -9,7 +9,7 @@ export const ItinerarySummaryBadge = ({ legs }) => {
         const isLast = legs.length - 1 === index;
 
         return (
-          <>
+          <div key={leg.id} className='flex flex-row space-x-1.5 items-center justify-center'>
             <LegIcon leg={leg} />
             <LineBadge leg={leg} />
             {!isLast && (
@@ -17,7 +17,7 @@ export const ItinerarySummaryBadge = ({ legs }) => {
                 <img alt="" src={chevronRight} className="w-[10px] h-[10px]" />
               </span>
             )}
-          </>
+          </div>
         );
       })}
     </span>

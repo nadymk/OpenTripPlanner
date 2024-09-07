@@ -1,13 +1,19 @@
-import { Leg } from '../../gql/graphql';
+import { Leg, Line } from '../../gql/graphql';
 import { TripPattern } from '../../gql/graphql';
 import { GeneralDetails, timeSince } from './ItineraryLegDetails';
 import { ItineraryLegDetails } from './ItineraryLegDetails';
 import { LegTime } from './LegTime';
-import { Button } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
 import { ItinerarySummaryBadge } from './ItinerarySummaryBadge';
+import { Button } from '../ui/Button';
 
-export function ItineraryDetails({ tripPattern }: { tripPattern: TripPattern & { legs: Leg[] } }) {
-
+export function ItineraryDetails({
+  tripPattern,
+  onLineSelected,
+}: {
+  tripPattern: TripPattern & { legs: Leg[] };
+  onLineSelected: (line: Line) => void;
+}) {
   return (
     <div className="overflow-hidden pb-12">
       {tripPattern.systemNotices.length > 0 && (
@@ -34,12 +40,13 @@ export function ItineraryDetails({ tripPattern }: { tripPattern: TripPattern & {
           </div>
           <div className="flex flex-row space-x-2">
             <Button
-              className="text-xs py-0.5 px-2"
+              variant="outline"
+              size="xs"
               onClick={() => {
                 console.log(tripPattern);
               }}
             >
-              Print
+              Print to console
             </Button>
           </div>
         </div>
@@ -62,6 +69,7 @@ export function ItineraryDetails({ tripPattern }: { tripPattern: TripPattern & {
               previousLeg={previous}
               isFirst={i === 0}
               isLast={i === tripPattern.legs.length - 1}
+              onLineSelected={onLineSelected}
             />
           );
         })}

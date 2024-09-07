@@ -43,10 +43,11 @@ export const InterChangeDot: FC<HTMLProps<HTMLDivElement>> = ({ className, ...pr
   );
 };
 
-export const LineDetailStop = ({ leg, type }: { type: 'start' }) => {
+export const LineDetailStop = ({ left, leg, type }: { type: 'start' }) => {
   return (
     <div className="flex w-full">
       <LegDetailLeftContainer>
+        <>{left}</>
         {/* <LegTime aimedTime={leg.aimedEndTime} expectedTime={leg.expectedEndTime} hasRealtime={leg.realtime} /> */}
       </LegDetailLeftContainer>
       <div className="grow flex flex-row relative h-full">

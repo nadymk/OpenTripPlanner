@@ -1,14 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { graphql } from '../gql';
-import request from 'graphql-request';
-import { QueryType, TripQueryVariables } from '../gql/graphql.ts';
+import { graphQLClient } from '../util/graphql.ts';
 
-const endpoint = import.meta.env.VITE_API_URL;
-
-/**
-  General purpose trip query document for debugging trip searches
-  TODO: should live in a separate file, and split into fragments for readability
- */
 const query = graphql(`
   query trip(
     $from: Location!
@@ -37,7 +30,7 @@ const query = graphql(`
       debugOutput {
         totalTime
       }
-      
+
       fromPlace {
         name
         latitude
@@ -119,40 +112,15 @@ const query = graphql(`
   }
 `);
 
-type TripQueryHook = (
-  variables?: TripQueryVariables,
-) => [QueryType | null, boolean, (pageCursor?: string) => Promise<void>];
+export const useTripQuery = (toCoords: string, fromCoords: string, variables) =>
+  useMutation({
+    mutationFn: async () =>
+      await graphQLClient(query, {
+        ...variables,
+        from: { coordinates: fromCoords },
+        to: { coordinates: toCoords },
+        pageCursor: variables.pageCursor ?? 0,
+      }),
+  });
 
-export const useTripQuery: TripQueryHook = (variables) => {
-  const [data, setData] = useState<QueryType | null>(null);
-  const [loading, setLoading] = useState(false);
-  const callback = useCallback(
-    async (pageCursor?: string) => {
-      if (loading) {
-        console.warn('Wait for previous search to finish');
-      } else {
-        if (variables) {
-          setLoading(true);
-          if (pageCursor) {
-            setData((await request(endpoint, query, { ...variables, pageCursor })) as QueryType);
-          } else {
-            setData((await request(endpoint, query, variables)) as QueryType);
-          }
-          setLoading(false);
-        } else {
-          console.warn("Can't search without variables");
-        }
-      }
-    },
-    [setData, variables, loading],
-  );
-
-  useEffect(() => {
-    if (variables?.from.coordinates && variables?.to.coordinates) {
-      callback();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variables?.from, variables?.to]);
-
-  return [data, loading, callback];
-};
+  
