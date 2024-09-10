@@ -1,5 +1,6 @@
 package org.opentripplanner.ext.emissions;
 
+import java.util.HashMap;
 import java.util.Optional;
 import org.opentripplanner.framework.lang.Sandbox;
 import org.opentripplanner.model.plan.Emissions;
@@ -10,6 +11,8 @@ import org.opentripplanner.transit.model.framework.FeedScopedId;
  */
 @Sandbox
 public interface EmissionsService {
+
+  HashMap<String, Integer> indexMap = new HashMap<>();
   /**
    * Get all emissions per meter for a specific route.
    *
@@ -17,7 +20,7 @@ public interface EmissionsService {
    */
   Optional<Emissions> getEmissionsPerMeterForRoute(FeedScopedId feedScopedRouteId);
 
-  Optional<Integer> getAvgOccupancy(String id);
+  Optional<Integer> getCrowdedness(String id);
 
   /**
    * Get all emissions per meter for a car.
@@ -25,4 +28,8 @@ public interface EmissionsService {
    * @return Emissions per meter
    */
   Optional<Emissions> getEmissionsPerMeterForCar();
+
+  default HashMap<String, Integer> getIndexMap() {
+    return indexMap;
+  }
 }

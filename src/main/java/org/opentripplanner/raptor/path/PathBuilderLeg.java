@@ -596,13 +596,14 @@ public class PathBuilderLeg<T extends RaptorTripSchedule> {
       transferConstraint
     );
 
-    return costCalculator.transitArrivalCost(
-      boardCost,
-      slackProvider.alightSlack(leg.trip.pattern().slackIndex()),
-      durationInSec(),
-      leg.trip,
-      toStop()
-    );
+    return boardCost;
+//    return costCalculator.transitArrivalCost(
+//      boardCost,
+//      slackProvider.alightSlack(leg.trip.pattern().slackIndex()),
+//      durationInSec(),
+//      leg.trip,
+//      toStop()
+//    );
   }
 
   private int egressCost(

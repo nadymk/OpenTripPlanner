@@ -10,16 +10,17 @@ public class CostCalculatorFactory {
     int[] stopBoardAlightCosts,
     EmissionsService emissionsService
   ) {
-//    RaptorCostCalculator<T> calculator = new DefaultCostCalculator<>(
-//      generalizedCostParameters,
-//      stopBoardAlightCosts
-//    );
-
-    // custom calculator added here
-    RaptorCostCalculator<T>   calculator = new CustomCostCalculator<>(
-//      calculator,
+    RaptorCostCalculator<T> calculator = new DefaultCostCalculator<>(
+      generalizedCostParameters,
+      stopBoardAlightCosts,
       emissionsService
     );
+
+    // custom calculator added here
+//    RaptorCostCalculator<T>   calculator = new CustomCostCalculator<>(
+////      calculator,
+//      emissionsService
+//    );
 
 //    if (generalizedCostParameters.wheelchairEnabled()) {
 //      calculator =

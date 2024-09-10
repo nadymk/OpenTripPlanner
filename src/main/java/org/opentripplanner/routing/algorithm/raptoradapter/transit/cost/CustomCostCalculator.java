@@ -63,10 +63,10 @@ public class CustomCostCalculator<T extends DefaultTripSchedule>
 //      transferConstraints
 //    );
 
-    var emissions = (int) emissionsService.getAvgOccupancy(id).get();
+    var emissions = (int) emissionsService.getCrowdedness(id).get();
 
 //    System.out.println("boardingCost - Default Cost: " + defaultCost + " avgOccupancy: " + emissions);
-    System.out.println(id + " - " + emissionsService.getAvgOccupancy(id));
+    System.out.println(id + " - " + emissionsService.getCrowdedness(id));
 //    System.out.println("boardStop: " + boardStop + " boardTime: " + boardTime);
 //    System.out.println("firstBoarding: " + firstBoarding + " prevArrivalTime: " + prevArrivalTime);
 //    System.out.println("trip: " + trip + " transferConstraints: " + transferConstraints);

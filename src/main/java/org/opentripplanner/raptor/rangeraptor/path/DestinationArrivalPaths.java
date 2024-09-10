@@ -203,6 +203,8 @@ public class DestinationArrivalPaths<T extends RaptorTripSchedule> {
       additionalCost += costCalculator.costEgress(egressPath);
     }
 
+//    System.out.println("Additional cost of " + additionalCost + " to c1 of " + stopArrival.c1());
+
     return new DestinationArrival<>(
       egressPath,
       stopArrival,
@@ -228,15 +230,15 @@ public class DestinationArrivalPaths<T extends RaptorTripSchedule> {
   ) {
     if (path.c1() != destArrival.c1()) {
       // TODO - Bug: Cost mismatch stop-arrivals and paths #3623
-      THROTTLE_MISS_MATCH.throttle(() ->
+//      THROTTLE_MISS_MATCH.throttle(() ->
         LOG.warn(
           "Cost mismatch - Mapper: {}, stop-arrivals: {}, path: {}  {}",
           OtpNumberFormat.formatCostCenti(path.c1()),
           raptorCostsAsString(destArrival),
           path.toStringDetailed(stopNameResolver),
           THROTTLE_MISS_MATCH.setupInfo()
-        )
-      );
+        );
+//      );
     }
   }
 

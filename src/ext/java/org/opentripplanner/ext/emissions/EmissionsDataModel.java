@@ -3,6 +3,7 @@ package org.opentripplanner.ext.emissions;
 import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.opentripplanner.transit.model.framework.FeedScopedId;
 
@@ -11,7 +12,7 @@ import org.opentripplanner.transit.model.framework.FeedScopedId;
  */
 public class EmissionsDataModel implements Serializable {
 
-  private Map<String, Integer> co2Emissions;
+  private Map<FeedScopedId, Integer> co2Emissions;
   private Double carAvgCo2PerMeter;
   private Integer avgOccupancy;
 
@@ -19,7 +20,7 @@ public class EmissionsDataModel implements Serializable {
   public EmissionsDataModel() {
   }
 
-  public EmissionsDataModel(Map<String, Integer> co2Emissions, double carAvgCo2PerMeter, int avgOccupancy) {
+  public EmissionsDataModel(Map<FeedScopedId, Integer> co2Emissions, double carAvgCo2PerMeter, int avgOccupancy) {
     this.co2Emissions = co2Emissions;
     this.carAvgCo2PerMeter = carAvgCo2PerMeter;
     this.avgOccupancy = avgOccupancy;
@@ -33,7 +34,7 @@ public class EmissionsDataModel implements Serializable {
     return Optional.ofNullable(this.avgOccupancy);
   }
 
-  public void setCo2Emissions(Map<String, Integer> co2Emissions) {
+  public void setCo2Emissions(Map<FeedScopedId, Integer> co2Emissions) {
     this.co2Emissions = co2Emissions;
   }
 
@@ -50,11 +51,13 @@ public class EmissionsDataModel implements Serializable {
 //    return Optional.ofNullable(this.co2Emissions.get(feedScopedRouteId));
   }
 
-  public Optional<Integer> getOccupancy(String stopId) {
-    if (this.co2Emissions.containsKey(stopId)) {
-      return Optional.ofNullable(this.co2Emissions.get(stopId));
-    }
+  public Optional<Integer> getCrowdedness(String stopId) {
+    return Optional.ofNullable(this.co2Emissions.get(new FeedScopedId("TFL", stopId)));
 
-    return Optional.ofNullable(this.avgOccupancy);
+//    return this.co2Emissions
+//      .keySet()
+//      .stream().filter(it -> Objects.equals(it.getId(), stopId))
+//      .findFirst()
+//      .map(feedScopedId -> this.co2Emissions.get(feedScopedId));
   }
 }

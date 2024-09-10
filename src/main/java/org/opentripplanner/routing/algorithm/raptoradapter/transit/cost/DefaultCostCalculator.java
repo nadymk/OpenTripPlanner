@@ -1,10 +1,12 @@
 package org.opentripplanner.routing.algorithm.raptoradapter.transit.cost;
 
 import javax.annotation.Nullable;
+import org.opentripplanner.ext.emissions.EmissionsService;
 import org.opentripplanner.model.transfer.TransferConstraint;
 import org.opentripplanner.raptor.api.model.RaptorAccessEgress;
 import org.opentripplanner.raptor.api.model.RaptorTransferConstraint;
 import org.opentripplanner.raptor.spi.RaptorCostCalculator;
+import org.opentripplanner.routing.algorithm.raptoradapter.transit.request.TripScheduleWithOffset;
 
 /**
  * The responsibility for the cost calculator is to calculate the default  multi-criteria cost.
@@ -20,6 +22,7 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
   private final int waitFactor;
   private final FactorStrategy transitFactors;
   private final int[] stopTransferCost;
+  private final EmissionsService emissionsService;
 
   /**
    * Cost unit: SECONDS - The unit for all input parameters are in the OTP TRANSIT model cost unit
@@ -34,13 +37,15 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     int transferCost,
     double waitReluctanceFactor,
     @Nullable double[] transitReluctanceFactors,
-    @Nullable int[] stopTransferCost
+    @Nullable int[] stopTransferCost,
+    EmissionsService emissionsService
   ) {
     this.boardCostOnly = RaptorCostConverter.toRaptorCost(boardCost);
     this.transferCostOnly = RaptorCostConverter.toRaptorCost(transferCost);
     this.boardAndTransferCost = transferCostOnly + boardCostOnly;
     this.waitFactor = RaptorCostConverter.toRaptorCost(waitReluctanceFactor);
 
+    this.emissionsService = emissionsService;
     this.transitFactors =
       transitReluctanceFactors == null
         ? new SingleValueFactorStrategy(GeneralizedCostParameters.DEFAULT_TRANSIT_RELUCTANCE)
@@ -49,13 +54,14 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     this.stopTransferCost = stopTransferCost;
   }
 
-  public DefaultCostCalculator(GeneralizedCostParameters params, int[] stopTransferCost) {
+  public DefaultCostCalculator(GeneralizedCostParameters params, int[] stopTransferCost, EmissionsService emissionsService) {
     this(
       params.boardCost(),
       params.transferCost(),
       params.waitReluctanceFactor(),
       params.transitReluctanceFactors(),
-      stopTransferCost
+      stopTransferCost,
+      emissionsService
     );
   }
 
@@ -68,8 +74,22 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     T trip,
     RaptorTransferConstraint transferConstraints
   ) {
+    int crowdedness = 0;
+
+    if (trip instanceof TripScheduleWithOffset) {
+      var result = ((TripScheduleWithOffset) trip)
+        .getOriginalTripPattern()
+        .getStops()
+        .stream()
+//          .filter(it -> it.getName().toString().toLowerCase().contains("king"))
+        .mapToInt(stop -> emissionsService.getCrowdedness(stop.getId().getId()).orElse(0))
+        .sum();
+
+      crowdedness += result;
+    }
+
     if (transferConstraints.isRegularTransfer()) {
-      return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime);
+      return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime) + crowdedness;
     } else {
       return boardingCostConstrainedTransfer(
         prevArrivalTime,
@@ -80,6 +100,7 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
         transferConstraints
       );
     }
+//    return 0;
   }
 
   @Override
@@ -167,6 +188,7 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     if (stopTransferCost != null && !firstBoarding) {
       cost += stopTransferCost[boardStop];
     }
+
     return cost;
   }
 

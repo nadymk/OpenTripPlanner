@@ -38,8 +38,8 @@ public class Co2EmissionsDataReader {
    *
    * @return emissions data
    */
-  public Map<String, Integer> readGtfs(File directory) {
-    String feedId = "";
+  public Map<FeedScopedId, Integer> readGtfs(File directory) {
+    String feedId = "TFL";
 //    File feedFile = new File(directory + "/feed_info.txt");
     File emissionsFile = new File(directory + "/emissions.txt");
     if (emissionsFile.exists()) {
@@ -58,7 +58,7 @@ public class Co2EmissionsDataReader {
    *
    * @return emissions data
    */
-  public Map<String, Integer> readGtfsZip(File file) {
+  public Map<FeedScopedId, Integer> readGtfsZip(File file) {
     try (ZipFile zipFile = new ZipFile(file, ZipFile.OPEN_READ)) {
       zipFile.stream().toList().forEach(f -> {
         LOG.info("File: " + f.getName());
@@ -68,7 +68,7 @@ public class Co2EmissionsDataReader {
       if (emissions != null) {
         LOG.info("emissions.txt: " + emissions.toString());
         InputStream stream = zipFile.getInputStream(emissions);
-        Map<String, Integer> emissionsData = readEmissions(stream, "non-whitespace");
+        Map<FeedScopedId, Integer> emissionsData = readEmissions(stream, "TFL");
         zipFile.close();
         return emissionsData;
       }
@@ -79,9 +79,9 @@ public class Co2EmissionsDataReader {
     return Map.of();
   }
 
-  private Map<String, Integer> readEmissions(InputStream stream, String feedId)
+  private Map<FeedScopedId, Integer> readEmissions(InputStream stream, String feedId)
     throws IOException {
-    Map<String, Integer> emissionsData = new HashMap<>();
+    Map<FeedScopedId, Integer> emissionsData = new HashMap<>();
     CsvReader reader = new CsvReader(stream, StandardCharsets.UTF_8);
     reader.readHeaders();
 
@@ -113,7 +113,7 @@ public class Co2EmissionsDataReader {
         LOG.info(value.toString());
         LOG.info("Stop Id: " + stopId + " Occupancy: " + occupancy);
 
-        value.ifPresent(integer -> emissionsData.put(stopId, integer));
+        value.ifPresent(integer -> emissionsData.put(new FeedScopedId(feedId, stopId), integer));
       }
     }
     return emissionsData;

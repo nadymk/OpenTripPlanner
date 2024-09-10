@@ -51,12 +51,12 @@ public class EmissionsModule implements GraphBuilderModule {
     double carAvgOccupancy = config.emissions.getCarAvgOccupancy();
     int avgOccupancy = config.emissions.getAvgOccupancy();
     double carAvgEmissionsPerMeter = carAvgCo2PerKm / 1000 / carAvgOccupancy;
-    Map<String, Integer> emissionsData = new HashMap<>();
+    Map<FeedScopedId, Integer> emissionsData = new HashMap<>();
     LOG.info("Data sources" + dataSources.toString());
 
     for (ConfiguredDataSource<GtfsFeedParameters> gtfsData : dataSources) {
       LOG.info("Source: " + gtfsData.dataSource().uri().toString());
-      Map<String, Integer> co2Emissions;
+      Map<FeedScopedId, Integer> co2Emissions;
       if (gtfsData.dataSource().name().contains(".zip")) {
         LOG.info("Loading source as a zip file");
         co2Emissions = co2EmissionsDataReader.readGtfsZip(new File(gtfsData.dataSource().uri()));

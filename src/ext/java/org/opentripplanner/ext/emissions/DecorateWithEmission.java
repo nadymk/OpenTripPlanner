@@ -46,6 +46,8 @@ public record DecorateWithEmission(EmissionsService emissionsService)
 
     Optional<Grams> co2ForCar = calculateCo2EmissionsForCar(carLegs);
 
+//    itinerary.setEmissionsPerPerson();
+
     if (co2ForTransit.isPresent() && co2ForCar.isPresent()) {
       itinerary.setEmissionsPerPerson(new Emissions(co2ForTransit.get().plus(co2ForCar.get())));
     } else if (co2ForTransit.isPresent()) {
