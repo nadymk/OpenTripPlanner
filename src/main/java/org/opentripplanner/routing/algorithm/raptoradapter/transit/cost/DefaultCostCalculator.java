@@ -40,6 +40,7 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     @Nullable int[] stopTransferCost,
     EmissionsService emissionsService
   ) {
+    System.out.println("Creating DefaultCostCalculator");
     this.boardCostOnly = RaptorCostConverter.toRaptorCost(boardCost);
     this.transferCostOnly = RaptorCostConverter.toRaptorCost(transferCost);
     this.boardAndTransferCost = transferCostOnly + boardCostOnly;
@@ -74,6 +75,8 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     T trip,
     RaptorTransferConstraint transferConstraints
   ) {
+    System.out.println("Calculating boardingCost");
+
     int crowdedness = 0;
 
     if (trip instanceof TripScheduleWithOffset) {
@@ -88,28 +91,33 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
       crowdedness += result;
     }
 
-    if (transferConstraints.isRegularTransfer()) {
-      return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime) + crowdedness;
-    } else {
-      return boardingCostConstrainedTransfer(
-        prevArrivalTime,
-        boardStop,
-        boardTime,
-        trip.transitReluctanceFactorIndex(),
-        firstBoarding,
-        transferConstraints
-      );
-    }
+    return crowdedness;
+
+//    if (transferConstraints.isRegularTransfer()) {
+////      return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime);
+//      return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime) + crowdedness;
+//    } else {
+//      return boardingCostConstrainedTransfer(
+//        prevArrivalTime,
+//        boardStop,
+//        boardTime,
+//        trip.transitReluctanceFactorIndex(),
+//        firstBoarding,
+//        transferConstraints
+//      );
+//    }
 //    return 0;
   }
 
   @Override
   public int onTripRelativeRidingCost(int boardTime, DefaultTripSchedule tripScheduledBoarded) {
+    System.out.println("Calculating onTripRelativeRidingCost");
     // The relative-transit-time is time spent on transit. We do not know the alight-stop, so
     // it is impossible to calculate the "correct" time. But the only thing that maters is that
     // the relative difference between to boardings are correct, assuming riding the same trip.
     // So, we can use the negative board time as relative-transit-time.
-    return -boardTime * transitFactors.factor(tripScheduledBoarded.transitReluctanceFactorIndex());
+//    return -boardTime * transitFactors.factor(tripScheduledBoarded.transitReluctanceFactorIndex());
+    return 0;
   }
 
   @Override
@@ -120,6 +128,7 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     T trip,
     int toStop
   ) {
+    System.out.println("Calculating transit arrival cost");
     int cost =
       boardCost +
       transitFactors.factor(trip.transitReluctanceFactorIndex()) *
@@ -133,38 +142,49 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
       cost += stopTransferCost[toStop];
     }
 
-    return cost;
+//    return cost;
+    return 0;
   }
 
   @Override
   public int waitCost(int waitTimeInSeconds) {
-    return waitFactor * waitTimeInSeconds;
+    System.out.println("Creating waitCost");
+
+//    return waitFactor * waitTimeInSeconds;
+    return 0;
   }
 
   @Override
   public int calculateMinCost(int minTravelTime, int minNumTransfers) {
-    return (
-      boardCostOnly +
-      boardAndTransferCost *
-      minNumTransfers +
-      transitFactors.minFactor() *
-      minTravelTime
-    );
+    System.out.println("Creating calculateMinCost");
+
+    return 0;
+//    return (
+//      boardCostOnly +
+//      boardAndTransferCost *
+//      minNumTransfers +
+//      transitFactors.minFactor() *
+//      minTravelTime
+//    );
   }
 
   @Override
   public int costEgress(RaptorAccessEgress egress) {
-    if (egress.hasRides()) {
-      return egress.c1() + transferCostOnly;
-    } else if (stopTransferCost != null) {
-      // Remove cost that was added during alighting.
-      // We do not want to add this cost on last alighting since it should only be applied on transfers
-      // It has to be done here because during alighting we do not know yet if it will be
-      // a transfer or not.
-      return egress.c1() - stopTransferCost[egress.stop()];
-    } else {
-      return egress.c1();
-    }
+    System.out.println("Creating costEgress");
+
+//    if (egress.hasRides()) {
+//      return egress.c1() + transferCostOnly;
+//    } else if (stopTransferCost != null) {
+//      // Remove cost that was added during alighting.
+//      // We do not want to add this cost on last alighting since it should only be applied on transfers
+//      // It has to be done here because during alighting we do not know yet if it will be
+//      // a transfer or not.
+//      return egress.c1() - stopTransferCost[egress.stop()];
+//    } else {
+//      return egress.c1();
+//    }
+
+    return 0;
   }
 
   /** This is public for test purposes only */
@@ -174,6 +194,8 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     int boardStop,
     int boardTime
   ) {
+    System.out.println("Creating boardingCostRegularTransfer");
+
     // Calculate the wait-time before the boarding which should be accounted for in the cost
     // calculation. Any slack at the end of the last leg is not part of this, because it is
     // already accounted for. If the previous leg is an access leg, then it is already
@@ -189,7 +211,9 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
       cost += stopTransferCost[boardStop];
     }
 
-    return cost;
+//    return cost;
+
+    return 0;
   }
 
   /* private methods */
@@ -202,35 +226,39 @@ public final class DefaultCostCalculator<T extends DefaultTripSchedule>
     boolean firstBoarding,
     RaptorTransferConstraint txConstraints
   ) {
+    System.out.println("Creating boardingCostConstrainedTransfer");
+
     // This cast could be avoided, if we added another generic type to the Raptor component,
     // but it would be rather messy, just to avoid a single cast.
     var tx = (TransferConstraint) txConstraints;
 
-    if (tx.isStaySeated()) {
-      final int boardWaitTime = boardTime - prevArrivalTime;
-      int transitReluctance = transitFactors.factor(transitReluctanceIndex);
-      // For a stay-seated transfer the wait-time is spent on-board and we should use the
-      // transitReluctance, not the waitReluctance, to find the cost of the time since
-      // the stop arrival. So we take the time and multiply it with the transit reluctance.
-      //
-      // Note! if the boarding happens BEFORE the previous stop arrival, we will get a
-      // negative time - this is ok, so we allow it in this calculation.
-      //
-      // The previous stop arrival might have a small alight-slack, this should be replaced
-      // with "on-board" time, but the slack should be short and the differance between
-      // transit reluctance and wait reluctance is also small, so we ignore this.
-      //
-      return transitReluctance * boardWaitTime;
-    } else if (tx.isGuaranteed()) {
-      // For a guaranteed transfer we skip board- and transfer-cost
-      final int boardWaitTime = boardTime - prevArrivalTime;
+//    if (tx.isStaySeated()) {
+//      final int boardWaitTime = boardTime - prevArrivalTime;
+//      int transitReluctance = transitFactors.factor(transitReluctanceIndex);
+//      // For a stay-seated transfer the wait-time is spent on-board and we should use the
+//      // transitReluctance, not the waitReluctance, to find the cost of the time since
+//      // the stop arrival. So we take the time and multiply it with the transit reluctance.
+//      //
+//      // Note! if the boarding happens BEFORE the previous stop arrival, we will get a
+//      // negative time - this is ok, so we allow it in this calculation.
+//      //
+//      // The previous stop arrival might have a small alight-slack, this should be replaced
+//      // with "on-board" time, but the slack should be short and the differance between
+//      // transit reluctance and wait reluctance is also small, so we ignore this.
+//      //
+//      return transitReluctance * boardWaitTime;
+//    } else if (tx.isGuaranteed()) {
+//      // For a guaranteed transfer we skip board- and transfer-cost
+//      final int boardWaitTime = boardTime - prevArrivalTime;
+//
+//      // StopTransferCost is NOT added to the cost here. This is because a trip-to-trip constrained transfer take
+//      // precedence over stop-to-stop transfer priority (NeTEx station transfer priority).
+//      return waitFactor * boardWaitTime;
+//    }
+//
+//    // fallback to regular transfer
+//    return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime);
 
-      // StopTransferCost is NOT added to the cost here. This is because a trip-to-trip constrained transfer take
-      // precedence over stop-to-stop transfer priority (NeTEx station transfer priority).
-      return waitFactor * boardWaitTime;
-    }
-
-    // fallback to regular transfer
-    return boardingCostRegularTransfer(firstBoarding, prevArrivalTime, boardStop, boardTime);
+    return 0;
   }
 }

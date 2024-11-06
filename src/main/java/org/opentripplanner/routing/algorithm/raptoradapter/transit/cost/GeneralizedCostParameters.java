@@ -35,7 +35,7 @@ public class GeneralizedCostParameters {
    * preferences are mapped.
    */
   private GeneralizedCostParameters() {
-    this.boardCost = 600;
+    this.boardCost = 20;
     this.transferCost = 0;
     this.transitReluctanceFactors = null;
     this.waitReluctanceFactor = 1.0;

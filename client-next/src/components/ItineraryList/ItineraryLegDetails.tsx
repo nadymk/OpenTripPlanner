@@ -186,7 +186,7 @@ export const GeneralDetails: FC<{
 
   return (
     <div className={cn('flex flex-wrap mt-3 gap-2', className)}>
-      <Badge>GC {leg.generalizedCost}</Badge>
+      {<Badge>GC {leg.generalizedCost}</Badge>}
       {leg.id && <Badge>{leg?.line.id}</Badge>}
       <Badge>{formatDistance(leg.distance)}</Badge>
       <Badge>{dayjs.duration(leg.duration, 'seconds').format('HH:mm:ss')}</Badge>

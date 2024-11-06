@@ -27,13 +27,14 @@ public class DefaultEmissionsService implements EmissionsService {
 
   @Override
   public Optional<Integer> getCrowdedness(String id) {
-//    if (indexMap.containsKey(id)) {
-//      return Optional.ofNullable(indexMap.get(id));
-//    }
-
     var value = this.emissionsDataModel.getCrowdedness(id);
-    System.out.println("Getting crowdedness for " + id + " " + value.orElse(-100));
-//    value.ifPresent(integer -> indexMap.put(id, integer));
+
+    if (value.isPresent()) {
+      System.out.println("Crowdedness for stop id '" + id + "' = " + value.get());
+    } else {
+      System.out.println("No crowdedness value stop id '" + id + "'");
+    }
+
     return value;
   }
 

@@ -33,40 +33,40 @@ export const isTransit = (leg?: Leg) => {
 };
 
 const tubeColors = {
-  'Circle line': {
+  'Circle': {
     color: '#FFD300',
     text: '#000000',
   },
-  'Bakerloo line': {
+  'Bakerloo': {
     color: '#a45a2a',
   },
-  'Central line': {
+  'Central': {
     color: '#da291c',
   },
-  'District line': {
+  'District': {
     color: '#007a33',
   },
-  'Hammersmith & City line': {
+  'Hammersmith & City': {
     color: '#e89cae',
     text: '#000000',
   },
-  'Jubilee line': {
+  'Jubilee': {
     color: '#7c878e',
   },
-  'Metropolitan line': {
+  'Metropolitan': {
     color: '#840b55',
   },
-  'Piccadilly line': {
+  'Piccadilly': {
     color: '#10069f',
   },
-  'Victoria line': {
+  'Victoria': {
     color: '#00a3e0',
   },
-  'Northern line': {
+  'Northern': {
     color: '#000000',
     text: '#ffffff',
   },
-  'Waterloo & City line': {
+  'Waterloo & City': {
     color: '#6eceb2',
   },
 };
@@ -147,7 +147,7 @@ export const operatorColors = {
   'London Cable Car': {
     color: '#dc241f',
   },
-  'Docklands Light Railway': {
+  'DLR': {
     color: '#00b2a9',
   },
   c2c: {

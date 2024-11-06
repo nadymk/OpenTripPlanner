@@ -194,15 +194,15 @@ public class MultiCriteriaRoutingStrategy<T extends RaptorTripSchedule, R extend
     final RaptorBoardOrAlightEvent<T> boardEvent
   ) {
     return (
-      prevArrival.c1() +
-      c1Calculator.boardingCost(
-        prevArrival.isFirstRound(),
-        prevArrival.arrivalTime(),
-        boardEvent.boardStopIndex(),
-        boardEvent.time(),
-        boardEvent.trip(),
-        boardEvent.transferConstraint()
-      )
+      prevArrival.c1() + 0
+//      c1Calculator.boardingCost(
+//        prevArrival.isFirstRound(),
+//        prevArrival.arrivalTime(),
+//        boardEvent.boardStopIndex(),
+//        boardEvent.time(),
+//        boardEvent.trip(),
+//        boardEvent.transferConstraint()
+//      )
     );
   }
 

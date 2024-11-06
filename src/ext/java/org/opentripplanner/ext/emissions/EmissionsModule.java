@@ -66,6 +66,9 @@ public class EmissionsModule implements GraphBuilderModule {
       }
       emissionsData.putAll(co2Emissions);
     }
+
+    System.out.println("Loaded " + emissionsData.size() + " occupancy data values");
+
     this.emissionsDataModel.setAvgOccupancy(avgOccupancy);
     this.emissionsDataModel.setCo2Emissions(emissionsData);
     this.emissionsDataModel.setCarAvgCo2PerMeter(carAvgEmissionsPerMeter);
