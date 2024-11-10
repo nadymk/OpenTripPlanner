@@ -4,6 +4,7 @@ import static org.opentripplanner.framework.application.OTPFeature.APIBikeRental
 import static org.opentripplanner.framework.application.OTPFeature.APIServerInfo;
 import static org.opentripplanner.framework.application.OTPFeature.APIUpdaterStatus;
 import static org.opentripplanner.framework.application.OTPFeature.ActuatorAPI;
+import static org.opentripplanner.framework.application.OTPFeature.Co2Emissions;
 import static org.opentripplanner.framework.application.OTPFeature.DebugUi;
 import static org.opentripplanner.framework.application.OTPFeature.GtfsGraphQlApi;
 import static org.opentripplanner.framework.application.OTPFeature.LegacyRestApi;
@@ -29,6 +30,7 @@ import org.opentripplanner.ext.geocoder.GeocoderResource;
 import org.opentripplanner.ext.parkAndRideApi.ParkAndRideResource;
 import org.opentripplanner.ext.reportapi.resource.ReportResource;
 import org.opentripplanner.ext.restapi.resources.BikeRental;
+import org.opentripplanner.ext.restapi.resources.CrowdednessResource;
 import org.opentripplanner.ext.restapi.resources.IndexAPI;
 import org.opentripplanner.ext.restapi.resources.PlannerResource;
 import org.opentripplanner.ext.restapi.resources.Routers;
@@ -46,11 +48,13 @@ public class APIEndpoints {
   private APIEndpoints() {
     // Add feature enabled APIs, these can be enabled by default, some is not.
     // See the OTPFeature enum for details.
+    addIfEnabled(Co2Emissions, CrowdednessResource.class);
     addIfEnabled(APIServerInfo, ServerInfo.class);
     addIfEnabled(APIUpdaterStatus, UpdaterStatusResource.class);
     addIfEnabled(DebugUi, GraphInspectorTileResource.class);
     addIfEnabled(DebugUi, GraphInspectorVectorTileResource.class);
     addIfEnabled(GtfsGraphQlApi, GtfsGraphQLAPI.class);
+//    addIfEnabled(Emissions, GtfsGraphQLAPI.class);
     // scheduled to be removed and only here for backwards compatibility
     addIfEnabled(GtfsGraphQlApi, GtfsGraphQLAPI.GtfsGraphQLAPIOldPath.class);
     addIfEnabled(TransmodelGraphQlApi, TransmodelAPI.class);

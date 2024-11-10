@@ -132,6 +132,9 @@ public class UnknownPath<T extends RaptorTripSchedule> implements RaptorPath<T> 
   }
 
   @Override
+  public final int crowdedness() {return -100;}
+
+  @Override
   public String toString() {
     PathStringBuilder pathBuilder = new PathStringBuilder(null);
     if (departureTime == 0 && arrivalTime == 0) {

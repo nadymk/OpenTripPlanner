@@ -21,6 +21,7 @@ public class RaptorResponse<T extends RaptorTripSchedule> {
   private final StopArrivals arrivals;
   private final boolean heuristicPathExist;
 
+
   public RaptorResponse(
     Collection<RaptorPath<T>> paths,
     StopArrivals arrivals,

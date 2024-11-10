@@ -34,7 +34,7 @@ public final class WalkPreferences implements Serializable {
   private WalkPreferences() {
     this.speed = 1.33;
     this.reluctance = 2.0;
-    this.boardCost = Cost.costOfMinutes(10);
+    this.boardCost = Cost.costOfMinutes(1);
     this.stairsReluctance = 2.0;
     this.stairsTimeFactor = 3.0;
     this.safetyFactor = 1.0;
@@ -44,7 +44,8 @@ public final class WalkPreferences implements Serializable {
   private WalkPreferences(Builder builder) {
     this.speed = Units.speed(builder.speed);
     this.reluctance = Units.reluctance(builder.reluctance);
-    this.boardCost = builder.boardCost;
+    this.boardCost = Cost.costOfMinutes(1);
+//    this.boardCost = builder.boardCost;
     this.stairsReluctance = Units.reluctance(builder.stairsReluctance);
     this.stairsTimeFactor = Units.reluctance(builder.stairsTimeFactor);
     this.safetyFactor = Units.reluctance(builder.safetyFactor);
@@ -171,7 +172,8 @@ public final class WalkPreferences implements Serializable {
       this.original = original;
       this.speed = original.speed;
       this.reluctance = original.reluctance;
-      this.boardCost = original.boardCost;
+      this.boardCost = Cost.costOfMinutes(1);
+//      this.boardCost = original.boardCost;
       this.stairsReluctance = original.stairsReluctance;
       this.stairsTimeFactor = original.stairsTimeFactor;
       this.safetyFactor = original.safetyFactor;

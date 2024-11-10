@@ -38,6 +38,7 @@ public class ItineraryMapper {
     api.waitingTime = domain.getWaitingDuration().toSeconds();
     api.walkDistance = domain.getNonTransitDistanceMeters();
     api.generalizedCost = domain.getGeneralizedCost();
+    api.crowdedness = domain.getCrowdedness();
     api.elevationLost = domain.getElevationLost();
     api.elevationGained = domain.getElevationGained();
     api.transfers = domain.getNumberOfTransfers();

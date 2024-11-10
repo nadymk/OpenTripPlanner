@@ -25,8 +25,8 @@ public class DefaultEmissionsService implements EmissionsService {
       : Optional.empty();
   }
 
-  @Override
-  public Optional<Integer> getCrowdedness(String id) {
+    @Override
+    public Optional<Integer> getCrowdedness(String id) {
     var value = this.emissionsDataModel.getCrowdedness(id);
 
     if (value.isPresent()) {

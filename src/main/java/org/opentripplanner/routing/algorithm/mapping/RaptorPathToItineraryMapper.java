@@ -160,6 +160,7 @@ public class RaptorPathToItineraryMapper<T extends TripSchedule> {
     }
 
     itinerary.setGeneralizedCost(toOtpDomainCost(path.c1()) - penaltyCost);
+    itinerary.setGeneralizedCost(toOtpDomainCost(path.c1()) - penaltyCost);
 
     return itinerary;
   }

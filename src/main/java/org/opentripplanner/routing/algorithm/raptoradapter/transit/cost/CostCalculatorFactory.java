@@ -2,18 +2,22 @@ package org.opentripplanner.routing.algorithm.raptoradapter.transit.cost;
 
 import org.opentripplanner.ext.emissions.EmissionsService;
 import org.opentripplanner.raptor.spi.RaptorCostCalculator;
+import org.opentripplanner.routing.algorithm.raptoradapter.transit.TransitLayer;
+import org.opentripplanner.transit.service.StopModel;
 
 public class CostCalculatorFactory {
 
   public static <T extends DefaultTripSchedule> RaptorCostCalculator<T> createCostCalculator(
     GeneralizedCostParameters generalizedCostParameters,
     int[] stopBoardAlightCosts,
-    EmissionsService emissionsService
+    EmissionsService emissionsService,
+    TransitLayer transitLayer
   ) {
     RaptorCostCalculator<T> calculator = new DefaultCostCalculator<>(
       generalizedCostParameters,
       stopBoardAlightCosts,
-      emissionsService
+      emissionsService,
+      transitLayer
     );
 
     // custom calculator added here

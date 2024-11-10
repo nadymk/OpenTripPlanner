@@ -28,6 +28,7 @@ public abstract class McStopArrival<T extends RaptorTripSchedule> implements Arr
   private final int arrivalTime;
   private final int travelDuration;
   private final int c1;
+  private int crowdedness = 0;
 
   /**
    * Transit or transfer.
@@ -79,6 +80,14 @@ public abstract class McStopArrival<T extends RaptorTripSchedule> implements Arr
   @Override
   public final int round() {
     return (paretoRound + 1) / 2;
+  }
+
+  public int getCrowdedness() {
+    return crowdedness;
+  }
+
+  public void setCrowdedness(int crowdedness) {
+    this.crowdedness = crowdedness;
   }
 
   protected final int paretoRound() {

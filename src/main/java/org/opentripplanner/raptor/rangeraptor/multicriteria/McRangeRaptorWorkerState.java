@@ -126,7 +126,8 @@ public final class McRangeRaptorWorkerState<T extends RaptorTripSchedule>
     final PatternRide<T> ride,
     final int alightStop,
     final int alightTime,
-    final int alightSlack
+    final int alightSlack,
+    final int crowdedness
   ) {
     final int stopArrivalTime = alightTime + alightSlack;
 
@@ -134,13 +135,15 @@ public final class McRangeRaptorWorkerState<T extends RaptorTripSchedule>
       return;
     }
 
-    final int c1 = calculateC1(ride, alightStop, alightTime, alightSlack);
+    final int c1 = calculateC1(ride, alightStop, alightTime, alightSlack) + crowdedness;
 
     var transitState = stopArrivalFactory.createTransitStopArrival(
       ride,
       alightStop,
       stopArrivalTime,
       c1
+//      crowdedness // we replaced c1 value with crowdedness
+//      c1
     );
 
     arrivalsCache.add(transitState);

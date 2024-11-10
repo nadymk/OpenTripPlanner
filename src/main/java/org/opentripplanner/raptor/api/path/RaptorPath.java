@@ -70,6 +70,8 @@ public interface RaptorPath<T extends RaptorTripSchedule> extends Comparable<Rap
    */
   int numberOfTransfersExAccessEgress();
 
+  int crowdedness();
+
   /**
    * The Raptor criteria-one(c1/generalized-cost) computed for this path.
    * <p>

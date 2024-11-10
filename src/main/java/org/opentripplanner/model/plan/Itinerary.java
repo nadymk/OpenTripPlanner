@@ -47,6 +47,7 @@ public class Itinerary implements ItinerarySortKey {
   private Double elevationLost = 0.0;
   private Double elevationGained = 0.0;
   private int generalizedCost = UNKNOWN;
+  private int crowdedness = UNKNOWN;
   private Integer generalizedCost2 = null;
   private TimeAndCost accessPenalty = TimeAndCost.ZERO;
   private TimeAndCost egressPenalty = TimeAndCost.ZERO;
@@ -503,6 +504,10 @@ public class Itinerary implements ItinerarySortKey {
     return generalizedCost;
   }
 
+  public int getCrowdedness() {
+    return crowdedness;
+  }
+
   /**
    * If a generalized cost is used in the routing algorithm, this is the cost computed plus
    * the artificial penalty added for access/egresses. This is useful so that itineraries
@@ -518,6 +523,10 @@ public class Itinerary implements ItinerarySortKey {
 
   public void setGeneralizedCost(int generalizedCost) {
     this.generalizedCost = generalizedCost;
+  }
+
+  public void setCrowdedness(int crowdedness) {
+    this.crowdedness = crowdedness;
   }
 
   /**

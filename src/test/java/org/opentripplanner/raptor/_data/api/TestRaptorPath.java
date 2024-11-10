@@ -24,7 +24,8 @@ public record TestRaptorPath(
   int durationInclusivePenaltyInSeconds,
   int numberOfTransfers,
   int c1,
-  int c2
+  int c2,
+  int crowdedness
 )
   implements RaptorPath<RaptorTripSchedule> {
   private static final String NOT_IMPLEMENTED_MESSAGE =

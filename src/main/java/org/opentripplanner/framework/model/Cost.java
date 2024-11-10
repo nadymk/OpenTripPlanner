@@ -22,7 +22,7 @@ public final class Cost implements Serializable, Comparable<Cost> {
 
   private final int value;
 
-  private Cost(int value) {
+  public Cost(int value) {
     this.value = IntUtils.requireNotNegative(value);
   }
 

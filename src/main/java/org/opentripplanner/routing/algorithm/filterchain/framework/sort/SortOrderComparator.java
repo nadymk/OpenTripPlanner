@@ -47,8 +47,8 @@ public class SortOrderComparator extends CompositeComparator<ItinerarySortKey> {
     STREET_ONLY_FIRST_COMP,
     ARRIVAL_TIME_COMP,
     GENERALIZED_COST_COMP,
-    NUM_OF_TRANSFERS_COMP,
-    DEPARTURE_TIME_COMP
+    DEPARTURE_TIME_COMP,
+    NUM_OF_TRANSFERS_COMP
   );
 
   private static final SortOrderComparator STREET_AND_DEPARTURE_TIME = new SortOrderComparator(

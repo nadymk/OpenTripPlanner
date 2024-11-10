@@ -17,6 +17,7 @@ import org.opentripplanner.raptor.spi.RaptorConstrainedBoardingSearch;
 import org.opentripplanner.raptor.spi.RaptorCostCalculator;
 import org.opentripplanner.raptor.spi.RaptorRoute;
 import org.opentripplanner.raptor.util.paretoset.ParetoSet;
+import org.opentripplanner.routing.algorithm.raptoradapter.transit.cost.DefaultCostCalculator;
 
 /**
  * The purpose of this class is to implement the multi-criteria specific functionality of the
@@ -85,7 +86,30 @@ public class MultiCriteriaRoutingStrategy<T extends RaptorTripSchedule, R extend
   @Override
   public void alightOnlyRegularTransferExist(int stopIndex, int stopPos, int alightSlack) {
     for (R ride : patternRides) {
-      state.transitToStop(ride, stopIndex, ride.trip().arrival(stopPos), alightSlack);
+      var transitLayer =  ((DefaultCostCalculator) c1Calculator).getTransitLayer();
+      var emissionsService =  ((DefaultCostCalculator) c1Calculator).getEmissionsService();
+      var startStop = transitLayer.getStopByIndex(ride.boardStopIndex());
+      var endStop = transitLayer.getStopByIndex(stopIndex);
+
+      var startPos = ride.boardPos();
+      var endPos = stopPos;
+
+      var crowdedness = 0;
+
+      for (int x = startPos; x < endPos; x++) {
+        var stopId = ride.trip().pattern().stopIndex(x);
+        var stop = transitLayer.getStopByIndex(stopId);
+
+        var value = emissionsService.getCrowdedness(stop.getId().getId());
+
+//        System.out.println(stop.getName() + " - Crowdedness: " + value);
+
+        crowdedness += value.orElse(0);
+      }
+
+//      System.out.println("Travelling from " + startStop.getName() + " to " + endStop.getName() + " with a crowededness value of " + crowdedness);
+
+      state.transitToStop(ride, stopIndex, ride.trip().arrival(stopPos), alightSlack, crowdedness);
     }
   }
 
