@@ -18,6 +18,7 @@ public final class TransitPathLeg<T extends RaptorTripSchedule> implements PathL
   private final int alightStopPos;
   private final RaptorConstrainedTransfer constrainedTransferAfterLeg;
   private final int c1;
+  private final int crowdedness;
   private final PathLeg<T> next;
   private final int boardStop;
   private final int alightStop;
@@ -30,6 +31,7 @@ public final class TransitPathLeg<T extends RaptorTripSchedule> implements PathL
     int alightStopPos,
     RaptorConstrainedTransfer constrainedTransferAfterLeg,
     int c1,
+    int crowdedness,
     PathLeg<T> next
   ) {
     this.trip = trip;
@@ -42,6 +44,7 @@ public final class TransitPathLeg<T extends RaptorTripSchedule> implements PathL
     this.next = next;
     this.boardStop = trip.pattern().stopIndex(boardStopPos);
     this.alightStop = trip.pattern().stopIndex(alightStopPos);
+    this.crowdedness = crowdedness;
   }
 
   /**

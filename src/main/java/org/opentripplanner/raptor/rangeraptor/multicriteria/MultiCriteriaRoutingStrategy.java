@@ -218,7 +218,8 @@ public class MultiCriteriaRoutingStrategy<T extends RaptorTripSchedule, R extend
     final RaptorBoardOrAlightEvent<T> boardEvent
   ) {
     return (
-      prevArrival.c1() + 0
+      prevArrival.getCrowdedness()
+//      prevArrival.c1() + 0
 //      c1Calculator.boardingCost(
 //        prevArrival.isFirstRound(),
 //        prevArrival.arrivalTime(),

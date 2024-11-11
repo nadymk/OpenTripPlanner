@@ -146,6 +146,8 @@ public final class McRangeRaptorWorkerState<T extends RaptorTripSchedule>
 //      c1
     );
 
+    transitState.setCrowdedness(crowdedness);
+
     arrivalsCache.add(transitState);
   }
 

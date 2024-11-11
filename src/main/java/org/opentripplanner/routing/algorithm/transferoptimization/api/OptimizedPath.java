@@ -30,7 +30,7 @@ public class OptimizedPath<T extends RaptorTripSchedule>
       originalPath.accessLeg(),
       originalPath.rangeRaptorIterationDepartureTime(),
       originalPath.c1(),
-      originalPath.c2(),
+      originalPath.crowdedness(),
       priorityCost(originalPath),
       NEUTRAL_COST,
       NEUTRAL_COST
@@ -50,6 +50,7 @@ public class OptimizedPath<T extends RaptorTripSchedule>
     this.transferPriorityCost = transferPriorityCost;
     this.waitTimeOptimizedCost = waitTimeOptimizedCost;
     this.breakTieCost = breakTieCost;
+    this.setCrowdedness(c2);
   }
 
   /**

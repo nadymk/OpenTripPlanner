@@ -440,6 +440,7 @@ public class PathBuilderLeg<T extends RaptorTripSchedule> {
       leg.boardAndAlightTime.alightStopPos(),
       leg.constrainedTransferAfterLeg,
       cost,
+      0,
       nextLeg
     );
   }

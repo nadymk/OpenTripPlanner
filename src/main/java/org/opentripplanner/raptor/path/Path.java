@@ -41,7 +41,7 @@ public class Path<T extends RaptorTripSchedule> implements RaptorPath<T> {
   private final int numberOfTransfers;
   private final int c1;
   private final int c2;
-  private final int crowdedness;
+  private int crowdedness;
   private final AccessPathLeg<T> accessLeg;
   private final EgressPathLeg<T> egressLeg;
 
@@ -82,7 +82,7 @@ public class Path<T extends RaptorTripSchedule> implements RaptorPath<T> {
     this.endTimeInclusivePenalty =
       egress.hasTimePenalty() ? endTime + egress.timePenalty() : endTime;
     this.c2 = c2;
-    this.crowdedness = -2;
+    this.crowdedness = c2;
   }
 
   public Path(int iterationDepartureTime, AccessPathLeg<T> accessLeg, int c1) {
@@ -95,7 +95,7 @@ public class Path<T extends RaptorTripSchedule> implements RaptorPath<T> {
       original.rangeRaptorIterationDepartureTime(),
       original.accessLeg(),
       original.c1(),
-      original.c2()
+      original.crowdedness()
     );
   }
 
@@ -155,6 +155,10 @@ public class Path<T extends RaptorTripSchedule> implements RaptorPath<T> {
 
   @Override
   public final int crowdedness() {return crowdedness;}
+
+  public void setCrowdedness(int crowdedness) {
+    this.crowdedness = crowdedness;
+  }
 
   @Override
   public int c2() {
